@@ -6,7 +6,13 @@ module.exports = function() {
   return actor({
 
     // Define custom steps here, use 'this' to access default methods of I.
-    // It is recommended to place a general 'login' function here.
-
+    getConsole(){
+      return this.grabBrowserLogs()
+        .then(logs => logs
+          .filter(log => log.source == 'console-api')
+          .map(log => /"(.+)"$/.exec(log.message))
+          .map(msg => msg ? msg[1] : null)
+        );
+    }
   });
-}
+};
