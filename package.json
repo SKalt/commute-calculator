@@ -1,0 +1,24 @@
+{
+  "name": "transit-cost-calculator",
+  "version": "1.0.0",
+  "description": "A SPA to calculate the time-cost of transit via the Mapzen time-distance APIs.",
+  "main": "src/main.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "mocha",
+    "server": "python -m http.server"
+  },
+  "keywords": [
+    "Mapzen",
+    "time",
+    "distance",
+    "cost",
+    "API",
+    "map",
+    "GIS"
+  ],
+  "author": "Steven Kalt",
+  "license": "ISC"
+}
