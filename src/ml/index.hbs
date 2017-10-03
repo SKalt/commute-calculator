@@ -1,15 +1,30 @@
 <head>
-  <title>Compare Commutes<title>
-  <script src="{{htmlWebpackPlugin.options.mb_src}}/mapbox-gl.js"></script>
-  <link href="{{htmlWebpackPlugin.options.mb_src}}/mapbox-gl.css"/>
-  <link href="./css/bundle.css" rel="stylesheet"/>
-<link
-  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-  rel="stylesheet"
-  integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"
-  />
+  <title>Compare Commutes
+    <title>
+      <script src="{{htmlWebpackPlugin.options.mb_src}}/mapbox-gl.js"></script>
+      <link href="{{htmlWebpackPlugin.options.mb_src}}/mapbox-gl.css" />
+      <link href="./css/bundle.css" rel="stylesheet" />
+      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
 </head>
+
 <body>
-  <div id="map"></div>
+  <div class="container">
+    <div id="col-left" class="col-md-8 col-sm-12">
+      <div id="map"></div>
+    </div>
+    <div id="col-right" class="col-md-4 col-sm-12">
+      <div class="buttons col-xs-12">
+        <div id="map-modes" class="col-xs-12">
+          <button id="add-sources" title="Add candidate residences" class="col-xs-3" />
+          <button id="add-destinations" title="Add places to commute between" class="col-xs-3" />
+          <button id="add-commute" title="add a commute between any two selected places" />
+        </div>
+      </div>
+      <div class="col-xs-12 collapsible">
+        <h3>Commutes</h3>
+        <table id="commutes"></table>
+      </div>
+    </div>
+  </div>
   <script src="./js/bundle.js"></script>
 </body>
