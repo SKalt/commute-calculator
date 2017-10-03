@@ -4,10 +4,10 @@ import {debug} from './debug.js';
 import {createStore} from 'redux';
 import {setupEvents} from './events.js';
 
-import {modes} from './reducers/map-modes.js';
+import {mapModes} from './reducers/map-modes.js';
 
 const store = createStore({
-  modes
+  mapModes
 });
 const events = mapboxgl.Evented;
 const map = mapboxgl.map({
