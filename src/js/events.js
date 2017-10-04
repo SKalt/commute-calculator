@@ -36,10 +36,7 @@ export function setupEvents(external){
     old = current;
     current = store.getState();
     onChangeOf('mapMode').emit('mapModeChange', mode => ({mode}));
-    // if (change('mapModes')){
-    //   events.fire('mapModeChange', {mapModeUpdate:lookup(current, 'mapModes')});
-    //   log(`mode change ${old.mapModes} -> ${current.mapModes}`);
-    // }
+    onChangeOf('locations').emit('locationUpdate', (locations)=>({locations}));
   });
-  store.dispatch({type:'REMOVE_LOCATIONS'});
+  //store.dispatch({type:'REMOVE_LOCATIONS'});
 }

@@ -47,7 +47,6 @@ all.except = function(fn){
 function swap({mode}){
   log(mode);
   if (mode == 'ADD_LOCATIONS'){
-    debugger;
     log(mode);
     let {additionType} = store.getState();
     log(additionType, store.getState());
@@ -72,5 +71,6 @@ export default function setupMapActions(external){
   store = external.store;
   events = external.events;
   log(map, store, events);
+  map.on('click', add.origin);
   events.on('mapModeChange', mode => swap(mode));
 }
