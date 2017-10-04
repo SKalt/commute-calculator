@@ -1,24 +1,45 @@
 import debug from './debug.js';
+import pass from './shorthand.js';
+
 const log = debug('app:redux');
 var old = {};
 var current = {};
+var events, store;
 
 const lookup = (obj, ...path) => {
   if (!obj || !path.length ) return undefined;
   let [next, ...rest] = path;
   return (rest.length) ? lookup(obj[next], ...rest):  obj[next];
 };
-const changeAt = (...path) => lookup(old, ...path) === lookup(current, ...path);
 
-export function setupEvents({store, events}){
-  console.log(events);
+//TODO: hold paths, checks in memory
+
+const emit = (type, cb, update) => events.fire(type, cb(update));
+const nothing = {emit:pass};
+
+function onChangeOf(...path){
+  let update = lookup(current, ...path);
+  if (!(update === lookup(old, ...path))){
+    log(path.join('.'), update);
+    return {emit: (type, cb)=>emit(type, cb, update)};
+  } else {
+    log(path.join('.'), 'not fired')
+    return nothing;
+  }
+}
+
+export function setupEvents(external){
+  events = external.events;
+  store = external.store;
+  log('initial state:', store.getState());
   store.subscribe(()=>{
     old = current;
     current = store.getState();
-    if (changeAt('mapMode')){
-      events.fire('mapModeChange', {mapModeUpdate:lookup(current, 'mapMode')});
-      log(`mode change ${old.mapMode} -> ${current.mapMode}`);
-    }
+    onChangeOf('mapMode').emit('mapModeChange', mode => ({mode}));
+    // if (change('mapModes')){
+    //   events.fire('mapModeChange', {mapModeUpdate:lookup(current, 'mapModes')});
+    //   log(`mode change ${old.mapModes} -> ${current.mapModes}`);
+    // }
   });
-  store.dispatch({type:'ADD_SOURCES'});
+  store.dispatch({type:'REMOVE_LOCATIONS'});
 }

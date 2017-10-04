@@ -6,14 +6,14 @@ import {setupEvents} from './events.js';
 import setupGeocoder from './geocoder.js';
 import '../css/style.css';
 
-import {mapModes} from './reducers/map-modes.js';
+import {mapMode} from './reducers/map-modes.js';
 document.addEventListener('DOMContentLoaded', ()=>{
   const store = createStore(
     combineReducers({
-      mapModes
+      mapMode
     })
   );
-  const events = mapboxgl.Evented;
+  const events = new mapboxgl.Evented;
   mapboxgl.accessToken = MB_ACCESS_TOKEN;
   var map = new mapboxgl.Map({
     container: 'map', // container id
