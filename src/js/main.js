@@ -3,6 +3,7 @@ import select from './shorthand.js';
 import {debug} from './debug.js';
 import {createStore, combineReducers} from 'redux';
 import {setupEvents} from './events.js';
+ import '../css/style.css';
 
 import {mapModes} from './reducers/map-modes.js';
 document.addEventListener('DOMContentLoaded', ()=>{
