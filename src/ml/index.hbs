@@ -14,13 +14,16 @@
       {{#each htmlWebpackPlugin.options.sections}}
         <div id="{{this.name}}-section" class="col-xs-12 collapsible">
           <h3>
-            {{this.name}}
+            <span class="col-xs-6">
+              {{this.name}}
+            </span>
             <a href="#" id="add-{{this.name}}" title="{{this.addTitle}}"
-            class="add btn btn-default">
-             +
+              class="add btn btn-default col-xs-3">
+              +
             </a>
             <a href="#" id="delete-{{this.name}}" title="{{this.deleteTitle}}"
-              class="delete btn btn-default"> -
+              class="delete btn btn-default col-xs-3">
+               -
             </a>
           </h3>
         </div>
