@@ -1,8 +1,9 @@
-/* global mapboxgl, document */
+/* global mapboxgl, document, MB_ACCESS_TOKEN */
 import select from './shorthand.js';
 import {debug} from './debug.js';
 import {createStore, combineReducers} from 'redux';
 import {setupEvents} from './events.js';
+import setupGeocoder from './geocoder.js';
 import '../css/style.css';
 
 import {mapModes} from './reducers/map-modes.js';
@@ -20,10 +21,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     center: [-84.388, 33.749], // starting position [lng, lat]
     zoom: 9 // starting zoom
   });
-  let geocoder = new MapboxGeocoder({
-    accessToken: mapboxgl.accessToken,
-    placeholder: 'Search by address'
-  });
-  map.addControl(geocoder);
   setupEvents(store, events);
+  setupGeocoder({map, events});
 });

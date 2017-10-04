@@ -13,6 +13,7 @@
       <div id="map"></div>
     </div>
     <div id="col-right" class="col-md-4 col-sm-12">
+      <div id="geocoder-holder" class="col-xs-12"></div>
       {{#each htmlWebpackPlugin.options.sections}}
         <div id="{{this.name}}-section" class="col-xs-12 collapsible">
           <h3>
@@ -29,9 +30,6 @@
             </a>
           </h3>
         </div>
-        {{#each [1,2]}}
-          {{this}}
-        {{/each}}
       {{/each}}
     </div>
   </div>

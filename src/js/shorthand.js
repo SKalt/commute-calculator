@@ -14,6 +14,15 @@ function select(selector){
 function id(id){
   return document.getElementById(id);
 }
+/**
+ * Shorthand for do
+ * @param  {String} selector a css selector
+ * @return {Element|null}          [description]
+ */
+function first(selector){
+  return document.querySelector(selector);
+}
 
 select.byId = id;
+select.first = first;
 export default select;
