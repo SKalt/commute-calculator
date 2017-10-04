@@ -51,6 +51,23 @@ module.exports = (env={}) => {
         title: 'Commute Cost Calculator',
         template: '!!handlebars-loader!./src/ml/index.hbs',
         mb_src: env.mb_src || 'https://api.mapbox.com/mapbox-gl-js/v0.40.1',
+        sections:[
+          {
+            name:'homes',
+            addTitle: 'Add homes',
+            deleteTitle: 'delete homes'
+          },
+          {
+            name:'destinations',
+            addTitle: 'add destinations',
+            deleteTitle: 'delete destinations'
+          },
+          {
+            name: 'commutes',
+            addTitle: 'add a trip between any two selected points',
+            deleteTitle: 'delete any selected trips'
+          }
+        ]
       }),
     ],
   };
