@@ -20,5 +20,6 @@ describe('lookup', function(){
     let a = {a:{b:1}};
     assert.ok(lookup(a, 'a', 'b') == 1);
     assert.ok(lookup(a, 'a', 'foo') == undefined);
+    assert.equal(lookup(a, 'a'), a.a);
   });
 })
