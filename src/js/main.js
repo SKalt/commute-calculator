@@ -1,16 +1,23 @@
 /* global mapboxgl, document, MB_ACCESS_TOKEN */
 import select from './shorthand.js';
-//import {debug} from './debug.js';
+import debug from './debug.js';
 import {createStore, combineReducers} from 'redux';
 import {setupEvents} from './events.js';
 import setupGeocoder from './geocoder.js';
 import '../css/style.css';
+import setupMapActions from './map-actions.js';
 
-import {mapMode} from './reducers/map-modes.js';
+const log = debug('app:main');
+
+import mapMode, {additionType} from './reducers/map-modes.js';
+import locations from './reducers/locations.js';
+
 document.addEventListener('DOMContentLoaded', ()=>{
   const store = createStore(
     combineReducers({
-      mapMode
+      mapMode,
+      locations,
+      additionType
     })
   );
   const events = new mapboxgl.Evented;
@@ -21,13 +28,36 @@ document.addEventListener('DOMContentLoaded', ()=>{
     center: [-84.388, 33.749], // starting position [lng, lat]
     zoom: 9 // starting zoom
   });
+  map.once('load', ()=>{
+    map.addSource('locations', {
+      type:'geojson',
+      data:{
+        type:'FeatureCollection',
+        features:[]
+      }
+    });
+  });
+
   let dependencyInjections = {map, store, events};
-  [setupEvents, setupGeocoder].forEach(setup => setup(dependencyInjections));
-  ['origins', 'destinations', 'commutes']
-    .forEach(
-      mode => select.byId('add-' + mode)
-        .addEventListener(
-          'click', ()=>store.dispatch({type:'TOGGLE_MODE', mode})
-        )
-    );
+  [setupEvents, setupGeocoder, setupMapActions].forEach(
+    setup => {
+      log(setup);
+      setup(dependencyInjections);
+    }
+  );
+  ['origins', 'destinations'].forEach(
+    mode => select.byId('add-' + mode)
+      .addEventListener(
+        'click', ()=>{
+          log(`${mode} clicked`);
+          store.dispatch({type:'ADD_LOCATIONS', locationType:mode});
+        })
+  );
+  select('.delete:not(#delete-commutes)').forEach(
+    btn => btn.addEventListener(
+      'click',
+      ()=>store.dispatch({type:'REMOVE_LOCATIONS'})
+    )
+  );
+
 });

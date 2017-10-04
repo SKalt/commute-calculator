@@ -31,4 +31,5 @@ function first(selector){
 export const pass = ()=>null;
 select.byId = id;
 select.first = first;
+
 export default select;

@@ -20,10 +20,10 @@ const nothing = {emit:pass};
 function onChangeOf(...path){
   let update = lookup(current, ...path);
   if (!(update === lookup(old, ...path))){
-    log(path.join('.'), update);
+    log(path.join('.') + ' update:', update);
     return {emit: (type, cb)=>emit(type, cb, update)};
   } else {
-    log(path.join('.'), 'not fired')
+    log(path.join('.') + 'not fired');
     return nothing;
   }
 }

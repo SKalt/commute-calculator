@@ -2,7 +2,7 @@
 import select from './shorthand.js';
 
 var map;//, events;
-export default function setup(external){
+export default function setupGeocoder(external){
   map = external.map;
   //events = external.events;
 
