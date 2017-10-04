@@ -6,7 +6,7 @@ const possible_modes = new Set([
   'REMOVE_COMMUTES'
 ]);
 
-export function mapModes(state, action){
+export function mapModes(state='ADD_SOURCES', action){
   if (action.type in possible_modes){
     return action.type;
   } else {

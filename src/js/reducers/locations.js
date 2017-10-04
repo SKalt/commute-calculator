@@ -8,7 +8,7 @@ const locationTypeActions = new Set([
 ]);
 var nextLocationId = 0;
 
-function points(state, action){
+function points(state={}, action){
   if (action.type in locationAdditionActions){
     return Object.assign({}, state, { [nextLocationId++]: action.point});
   } else if (action.type == 'DELETE_LOCATION') {
@@ -20,7 +20,7 @@ function points(state, action){
   }
 }
 
-function locationTypes(state, action){
+function locationTypes(state={}, action){
   if (action.type in locationTypeActions){
     return Object.assign({}, state, {[action.id] : action.locationType});
   } else if (action.type == 'DELETE_LOCATION'){
