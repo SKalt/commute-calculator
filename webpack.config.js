@@ -1,19 +1,22 @@
 /* global __dirname*/
 const path = require('path');
+const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const fs = require('fs');
 
-module.exports = env => {
+module.exports = (env={}) => {
+  let MB_ACCESS_TOKEN = fs.readFileSync('api-keys/mapbox.txt', 'utf8').trim();
+  MB_ACCESS_TOKEN = `'${MB_ACCESS_TOKEN}'`;
   return {
     entry: './src/js/main.js',
     output: {
-      filename: 'bundle.js',
+      filename: 'js/bundle.js',
       path: path.resolve(__dirname, 'dist')
     },
-    devtool: 'source-map',
+    devtool: 'inline-source-map',
     devServer: {
-      contentBase: './dist',
-      hot: true
+      contentBase: path.join(__dirname, 'dist')
     },
     module: {
       rules: [
@@ -39,11 +42,15 @@ module.exports = env => {
       ]
     },
     plugins: [
+      new webpack.DefinePlugin(Object.assign({ // defaults
+        ENV: "'debugging'",
+        MB_ACCESS_TOKEN
+      }, env)),
       new CleanWebpackPlugin(['dist']),
       new HtmlWebpackPlugin({
         title: 'Commute Cost Calculator',
         template: '!!handlebars-loader!./src/ml/index.hbs',
-        mb_src: env.mb_src || 'https://api.mapbox.com/mapbox-gl-js/v0.40.1/',
+        mb_src: env.mb_src || 'https://api.mapbox.com/mapbox-gl-js/v0.40.1',
       }),
     ],
   };

@@ -1,17 +1,23 @@
 /* global maboxgl, ENV, document */
 import select from './shorthand.js';
 import {debug} from './debug.js';
-import {createStore} from 'redux';
+import {createStore, combineReducers} from 'redux';
 import {setupEvents} from './events.js';
 
 import {mapModes} from './reducers/map-modes.js';
-
-const store = createStore({
-  mapModes
+document.addEventListener('DOMContentLoaded', ()=>{
+  const store = createStore(
+    combineReducers({
+      mapModes
+    })
+  );
+  const events = mapboxgl.Evented;
+  mapboxgl.accessToken = MB_ACCESS_TOKEN;
+  var map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/mapbox/light-v9', // stylesheet location
+    center: [-84.388, 33.749], // starting position [lng, lat]
+    zoom: 9 // starting zoom
+  });
+  setupEvents(store, events);
 });
-const events = mapboxgl.Evented;
-const map = mapboxgl.map({
-  container: 'map',
-  style: 'mapbox://styles/mapbox/streets-v9' // TODO: toggle dark/light
-});
-setupEvents(store, events);
