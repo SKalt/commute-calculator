@@ -15,7 +15,7 @@ function id(id){
   return document.getElementById(id);
 }
 /**
- * Shorthand for do
+ * Shorthand for document.querySelector
  * @param  {String} selector a css selector
  * @return {Element|null}          [description]
  */
@@ -23,6 +23,12 @@ function first(selector){
   return document.querySelector(selector);
 }
 
+/**
+ * Shorthand for doing nothing while avoiding 'not a function' errors
+ * @function
+ * @return {null} falsy for filtering
+ */
+export const pass = ()=>null;
 select.byId = id;
 select.first = first;
 export default select;

@@ -43,7 +43,7 @@ module.exports = (env={}) => {
     },
     plugins: [
       new webpack.DefinePlugin(Object.assign({ // defaults
-        ENV: "'debugging'",
+        ENV: '"debugging"',
         MB_ACCESS_TOKEN
       }, env)),
       new CleanWebpackPlugin(['dist']),
@@ -53,9 +53,9 @@ module.exports = (env={}) => {
         mb_src: env.mb_src || 'https://api.mapbox.com/mapbox-gl-js/v0.40.1',
         sections:[
           {
-            name:'homes',
-            addTitle: 'Add homes',
-            deleteTitle: 'delete homes'
+            name:'origins',
+            addTitle: 'Add places you might commute from, such as potential apartments',
+            deleteTitle: 'delete places you might commute from'
           },
           {
             name:'destinations',

@@ -1,3 +1,5 @@
+import debug from './debug.js';
+const log = debug('app:redux');
 var old = {};
 var current = {};
 
@@ -8,12 +10,15 @@ const lookup = (obj, ...path) => {
 };
 const changeAt = (...path) => lookup(old, ...path) === lookup(current, ...path);
 
-export function setupEvents(store, events){
+export function setupEvents({store, events}){
+  console.log(events);
   store.subscribe(()=>{
     old = current;
     current = store.getState();
     if (changeAt('mapMode')){
       events.fire('mapModeChange', {mapModeUpdate:lookup(current, 'mapMode')});
+      log(`mode change ${old.mapMode} -> ${current.mapMode}`);
     }
   });
+  store.dispatch({type:'ADD_SOURCES'});
 }

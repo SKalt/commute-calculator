@@ -1,7 +1,8 @@
 /* global ENV */
 import {debug} from 'debug';
 if (ENV != 'production'){
-  debug.enable('*');
+  debug.disable('*');
+  debug.enable('app:*');
 } else {
   debug.disable();
 }
