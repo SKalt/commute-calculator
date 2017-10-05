@@ -7,6 +7,7 @@ import setupGeocoder from './geocoder.js';
 import '../css/style.css';
 import setupMapActions from './map-actions.js';
 import setupMapDisplay from './map-display.js';
+import setupLocationTables from './location-tables.js';
 
 const log = debug('app:main');
 
@@ -32,7 +33,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
 
   let dependencyInjections = {map, store, events};
-  [setupEvents, setupGeocoder, setupMapActions, setupMapDisplay].forEach(
+  [
+    setupEvents, setupGeocoder, setupMapActions, setupMapDisplay,
+    setupLocationTables
+  ].forEach(
     setup => {
       log(setup);
       setup(dependencyInjections);
