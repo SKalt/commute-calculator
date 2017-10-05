@@ -2,20 +2,19 @@ import select from './shorthand.js';
 import debug from './debug.js';
 const log = debug('app:locationTables');
 import Sortable from 'sortablejs';
-debugger;
-log(Sortable);
 var map, store, events;
 const parser = new DOMParser();
 class DivTable {
-  constructor(types){
+  constructor(types, group){
     this.types = types;
-    this.id = `${types}-list`;
     this.type = types.slice(0, -1);
+    this.id = `${types}-list`;
     this.renderedIds = new Set();
-    this.sortable = new Sortable(select.byId(this.id),
+    this.sortable = new Sortable(
+      select.byId(this.id),
       {
         draggable: '.item',  // Specifies which items inside the element should be draggable
-        // Element dragging ended
+        group,
         // Element dragging ended
         onEnd: function (/**Event*/evt) {
           log('end', evt);  // dragged HTMLElement
@@ -66,7 +65,7 @@ const render = {
       return `<div class="${classes}" ${attrs}>${text}</div>`;
     },
     location(loc){
-      debugger;
+      log( 'location -> text: ', loc);
       let inner = [
         render.text.div(
           'col-xs-6',
@@ -79,10 +78,11 @@ const render = {
           loc.properties.name || loc.properties.notes || loc.id
         )
       ];
-      return render.text.div('col-xs-12', {'data-id':loc.id}, inner.join(''))
+      return render.text.div('col-xs-12 item', {'data-id':loc.id}, inner.join(''));
     }
   },
   locations(locs){
+    log('locations to render', locs);
     select.byId('origins-list').innerHTML = locs.map(this.text.location).join('');
   }
 }
@@ -91,10 +91,23 @@ export default function setupLocationTables(external){
   map = external.map;
   store = external.store;
   events = external.events;
+  const originsList = new DivTable('origins');
+  const destinationsList = new DivTable('destinations');
   events.on('locationUpdate', (e) =>{
-    log(e);
+    log('locationUpdate recieved', e);
     let {locations} = e;
-    render.locations(Object.values(locations));
+    let origins = [];
+    let destinations = [];
+    Object.values(locations).forEach(
+      loc => {
+        if (loc.properties.type == 'origin'){
+          origins.push(loc);
+        } else {
+          destinations.push(loc);
+        }
+      }
+    );
+    render.locations(origins);
   });
   // });
 }
