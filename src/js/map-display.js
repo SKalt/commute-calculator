@@ -26,10 +26,7 @@ export default function setupDisplay(external){
   map.once('load', ()=>{
     map.addSource('locations-src', {
       type:'geojson',
-      data:{
-        type:'FeatureCollection',
-        features:[]
-      }
+      data:featureCollection([])
     });
     map.addLayer(
       newLayer('origins', ['==', 'type', 'origin'], '#C22745')

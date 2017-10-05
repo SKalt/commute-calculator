@@ -7,7 +7,10 @@ var nextId = 0;
 export default function locations(state={}, action){
   if (action.type == 'ADD_LOCATION'){
     log(action);
-    return Object.assign({}, state, { [nextId++]: action.location});
+    let id = action.location.id || nextId++;
+    return Object.assign({}, state, {
+      [id]: Object.assign({}, action.location, {id})
+    });
   } else if (action.type == 'UPDATE_LOCATION'){
     log(action, nextId(action), nextId(action));
     return Object.assign({}, state, {[action.id] : action.location});
