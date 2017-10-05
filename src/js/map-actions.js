@@ -37,9 +37,7 @@ const select = {
   to(){} //TODO
 };
 
-const all = [add, remove, select]
-  .map(Object.entries)
-  .reduce((a,b) => a.concat(b), []);
+const all = [add, remove, select].map(Object.values).reduce((a,b)=>a.concat(b), []);
 all.except = function(fn){
   this.filter(e => e != fn);
 };
@@ -48,20 +46,20 @@ function swap(event){
   let {mode, additionType} = event;
   mode = mode || store.getState().mapMode;
   additionType = additionType || store.getState().additionType;
-  log('***', mode);
+  log('***', mode, additionType);
   if (mode == 'ADD_LOCATIONS'){
     log(mode);
     log('---------', additionType, store.getState());
     if (additionType == 'origins'){
       log('swap -> origns');
-      unbind(all.except(add.origin));
+      unbind(...all);
       map.on('click', add.origin);
     } else if (additionType == 'destinations'){
-      unbind(all.except(add.destination));
+      unbind(...all);
       map.on('click', add.destination);
     }
   } else if (mode == 'REMOVE_LOCATIONS'){
-    unbind(all.except(remove.location));
+    unbind(...all);
     map.on('click', remove.location);
   } else {
     throw new Error('unexpected mode ' + mode);

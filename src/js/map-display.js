@@ -32,10 +32,10 @@ export default function setupDisplay(external){
       }
     });
     map.addLayer(
-      newLayer('origins', ['==', 'type', 'origin'], '#896DC9')
+      newLayer('origins', ['==', 'type', 'origin'], '#C22745')
     );
     map.addLayer(
-      newLayer('destinations', ['==', 'type', 'destination'], '#C96D7F')
+      newLayer('destinations', ['==', 'type', 'destination'], '#5727C2')
     );
     events.on('locationUpdate', ({locations}) => {
       let features = featureCollection(Object.values(locations));

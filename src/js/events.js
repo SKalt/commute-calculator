@@ -41,7 +41,7 @@ export function setupEvents(external){
     onChangeOf('mapMode').emit('mapModeChange', mode => ({mode}));
     onChangeOf('additionType').emit(
       'mapModeChange',
-      additionType => additionType
+      additionType => Object.assign({}, additionType, {mode:'ADD_LOCATIONS'})
     );
     onChangeOf('locations').emit('locationUpdate', locations=>({locations}));
   });
