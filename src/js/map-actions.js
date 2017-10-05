@@ -1,16 +1,15 @@
 import debug from './debug.js';
-//import {feature, point} from '@turf/helpers';
+import {point} from '@turf/helpers';
 const log = debug('app:mapActions');
 var map, store, events;
 const params = {layers:['locations']};
 const add = {
   location(e, type){
     log(e, type);
-    let point = e.lngLat;
+    let {lng, lat} = e.lngLat;
     store.dispatch({
       type: 'ADD_LOCATION',
-      point,
-      locationType: type
+      location:point([lng, lat], {type})
     });
   },
   origin(e){
@@ -51,6 +50,7 @@ function swap({mode}){
     let {additionType} = store.getState();
     log(additionType, store.getState());
     if (additionType == 'origins'){
+      log('swap -> origns')
       unbind(all.except(add.origin));
       map.on('click', add.origin);
     } else if (additionType == 'destinations'){

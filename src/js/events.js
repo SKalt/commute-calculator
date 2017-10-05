@@ -20,6 +20,7 @@ const nothing = {emit:pass};
 function onChangeOf(...path){
   let update = lookup(current, ...path);
   if (!(update === lookup(old, ...path))){
+    log('*******', old, current);
     log(path.join('.') + ' update:', update);
     return {emit: (type, cb)=>emit(type, cb, update)};
   } else {
@@ -31,12 +32,14 @@ function onChangeOf(...path){
 export function setupEvents(external){
   events = external.events;
   store = external.store;
+  old = current = store.getState();
   log('initial state:', store.getState());
+  store.subscribe(()=>log('===========', store.getState()));
   store.subscribe(()=>{
     old = current;
     current = store.getState();
     onChangeOf('mapMode').emit('mapModeChange', mode => ({mode}));
-    onChangeOf('locations').emit('locationUpdate', (locations)=>({locations}));
+    onChangeOf('locations').emit('locationUpdate', locations=>({locations}));
   });
   //store.dispatch({type:'REMOVE_LOCATIONS'});
 }

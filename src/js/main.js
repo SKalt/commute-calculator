@@ -6,6 +6,7 @@ import {setupEvents} from './events.js';
 import setupGeocoder from './geocoder.js';
 import '../css/style.css';
 import setupMapActions from './map-actions.js';
+import setupMapDisplay from './map-display.js';
 
 const log = debug('app:main');
 
@@ -28,18 +29,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
     center: [-84.388, 33.749], // starting position [lng, lat]
     zoom: 9 // starting zoom
   });
-  map.once('load', ()=>{
-    map.addSource('locations', {
-      type:'geojson',
-      data:{
-        type:'FeatureCollection',
-        features:[]
-      }
-    });
-  });
+
 
   let dependencyInjections = {map, store, events};
-  [setupEvents, setupGeocoder, setupMapActions].forEach(
+  [setupEvents, setupGeocoder, setupMapActions, setupMapDisplay].forEach(
     setup => {
       log(setup);
       setup(dependencyInjections);
