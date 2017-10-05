@@ -1,7 +1,7 @@
 var map, store, events;
-import {point, feature, featureCollection} from '@turf/helpers';
-import debug from './debug.js'
-const log = debug('app:mapDisplay')
+import {featureCollection} from '@turf/helpers';
+import debug from './debug.js';
+const log = debug('app:mapDisplay');
 
 const proto = {
   layer: {

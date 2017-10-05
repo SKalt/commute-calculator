@@ -39,6 +39,10 @@ export function setupEvents(external){
     old = current;
     current = store.getState();
     onChangeOf('mapMode').emit('mapModeChange', mode => ({mode}));
+    onChangeOf('additionType').emit(
+      'mapModeChange',
+      additionType => additionType
+    );
     onChangeOf('locations').emit('locationUpdate', locations=>({locations}));
   });
   //store.dispatch({type:'REMOVE_LOCATIONS'});

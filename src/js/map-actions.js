@@ -16,6 +16,7 @@ const add = {
     add.location(e, 'origin');
   },
   destination(e){
+    log('destination added --------------');
     add.location(e, 'destination');
   }
 };
@@ -43,14 +44,16 @@ all.except = function(fn){
   this.filter(e => e != fn);
 };
 
-function swap({mode}){
-  log(mode);
+function swap(event){
+  let {mode, additionType} = event;
+  mode = mode || store.getState().mapMode;
+  additionType = additionType || store.getState().additionType;
+  log('***', mode);
   if (mode == 'ADD_LOCATIONS'){
     log(mode);
-    let {additionType} = store.getState();
-    log(additionType, store.getState());
+    log('---------', additionType, store.getState());
     if (additionType == 'origins'){
-      log('swap -> origns')
+      log('swap -> origns');
       unbind(all.except(add.origin));
       map.on('click', add.origin);
     } else if (additionType == 'destinations'){
