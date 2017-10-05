@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "@turf/helpers": "^5.0.0",
+    "html5sortable": "^0.6.3",
     "redux": "^3.7.2"
   }
 }
