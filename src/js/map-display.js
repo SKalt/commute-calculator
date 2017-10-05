@@ -3,6 +3,22 @@ import {point, feature, featureCollection} from '@turf/helpers';
 import debug from './debug.js'
 const log = debug('app:mapDisplay')
 
+const proto = {
+  layer: {
+    source: 'locations-src',
+    type:'circle'
+  },
+  paint:{
+    'circle-opacity': .8,
+    'circle-radius' : 8
+  }
+};
+const newLayer = (id, filter, color) => Object.assign(
+  {id, filter},
+  proto.layer,
+  {paint:Object.assign({'circle-color': color}, proto.paint)}
+);
+
 export default function setupDisplay(external){
   map = external.map;
   store = external.store;
@@ -15,24 +31,12 @@ export default function setupDisplay(external){
         features:[]
       }
     });
-    map.addLayer({
-      id: 'origins-lyr',
-      source: 'locations-src',
-      type: 'circle',
-      filter: ['==', 'type', 'origin']
-      // layout:{
-      //   'icon-image': 'monument-15',
-      //   'text-field': 'title',
-      //   'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
-      //   'text-offset': [0, 0.6],
-      //   'text-anchor': 'top'
-      // }
-    });
-    map.addLayer({
-      id: 'destinations-lyr',
-      source: 'locations-src',
-      type:'symbol'
-    });
+    map.addLayer(
+      newLayer('origins', ['==', 'type', 'origin'], '#896DC9')
+    );
+    map.addLayer(
+      newLayer('destinations', ['==', 'type', 'destination'], '#C96D7F')
+    );
     events.on('locationUpdate', ({locations}) => {
       let features = featureCollection(Object.values(locations));
       log(features);
