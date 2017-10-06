@@ -10,7 +10,8 @@ export default function setupGeocoder(external){
 
   let geocoder = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
-    placeholder: 'Search by address'
+    placeholder: 'Search by address',
+    types:'district,place,locality,neighborhood,address,poi'
   });
   geocoder.on('result', ({result}) => {
     log('result',result);
