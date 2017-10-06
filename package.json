@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "A SPA to calculate the time-cost of transit via the Mapzen time-distance APIs.",
   "main": "src/main.js",
+  "repository" :{
+    "type":"git",
+    "url": "https://github.com/SKalt/commute-calculator.git"
+  },
   "directories": {
     "test": "tests"
   },
