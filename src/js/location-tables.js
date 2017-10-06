@@ -14,21 +14,20 @@ const render = {
       let inner = [
         render.text.div(
           'col-xs-6',
-          {title:'Location role: origin or destiation'},
-          loc.properties.type
+          {title:'Location name'},
+          loc.properties.name
+            || loc.properties.notes
+            || loc.properties.address
+            || loc.id
         ),
         render.text.div(
-          'col-xs-6',
-          {title:'Location name'},
-          loc.properties.name || loc.properties.notes || loc.id
+          'col-xs-6 delete btn btn-default',
+          {title:'delete'},
+          'delete'
         )
       ];
       return render.text.div('col-xs-12 item', {'data-id':loc.id}, inner.join(''));
     }
-  },
-  locations(locs){
-    log('locations to render', locs);
-    select.byId('origins-list').innerHTML = locs.map(this.text.location).join('');
   }
 };
 
@@ -46,7 +45,7 @@ class SortableList {
         draggable: '.item',  // Specifies which items inside the element should be draggable
         group,
         // Called by any change to the list (add / update / remove)
-        onSort: function (/**Event*/evt) {
+        onSort:  (/**Event*/evt) => {
           // TODO: save order to localStorage
           log(`sort:${evt.to.id}->${evt.from.id}|id:${evt.item.dataset.id}`);
           let {item, from, to} = evt;
@@ -54,14 +53,14 @@ class SortableList {
           if (from == to){
             // TODO: update internal order
           } else {
-            let newType = to.dataset.type;
             let location = store.getState().locations[id];
-            log(location);
-            location.properties.type = newType;
-            log(location);
-              // store.dispatch({
-              //   type:'UPDATE_LOCATION', location
-              // });
+            log('original location:', location);
+            location.properties.type = this.type;
+            log('updated location:', location);
+            this.renderedIds.add(id);
+            store.dispatch({
+              type:'UPDATE_LOCATION', location
+            });
           }
         }
       }
@@ -71,14 +70,25 @@ class SortableList {
   update({locations}){
     // update order
     // remove updated/deleted locations
-    let toRender = [];
+    let toRender = {ids:new Set(), locations:[]};
     Object.entries(locations).filter(
-      ([id, loc])=>loc.property.type == this.type && !this.renderedIds.has(id)
+      ([id, loc])=>loc.properties.type == this.type && !this.renderedIds.has(id)
     ).forEach(([id, loc]) => {
-      toRender.push(loc);
-      this.rendered.add(id);
+      toRender.ids.add(id);
+      toRender.locations.push(loc);
     });
-    this.render(toRender);
+    toRender.ids.forEach(e => this.renderedIds.add(e));
+    this.render(toRender.locations);
+    // using innerHTML kills all element-specific listeners
+    this.el.querySelectorAll('.item')
+      .forEach(el => el.children[1].addEventListener('click',
+        () => {
+          let {id} = el.dataset;
+          this.renderedIds.delete(id) && el.remove();
+          store.dispatch({ type:'DELETE_LOCATION', id });
+          log(this.renderedIds);
+        })
+      );
   }
   render(locations){
     this.el.innerHTML += locations.map(render.text.location).join('');
@@ -95,20 +105,7 @@ export default function setupLocationTables(external){
   const destinationsList = new SortableList('destinations');
   events.on('locationUpdate', (e) =>{
     log('locationUpdate recieved', e);
-    let {locations} = e;
-    let origins = [];
-    let destinations = [];
-    Object.values(locations).forEach(
-      loc => {
-        if (loc.properties.type == 'origin'){
-          origins.push(loc);
-        } else {
-          destinations.push(loc);
-        }
-      }
-    );
-    render.locations(origins);
-    //render.locations(destinations);
+    originsList.update(e);
+    destinationsList.update(e);
   });
-  // });
 }
