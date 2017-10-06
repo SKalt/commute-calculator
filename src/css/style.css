@@ -8,6 +8,10 @@
 #origins-section, #destinations-section, #commutes-section {
   padding-left: 0px;
 }
+.sortable:empty {
+  background-color: #efefef;
+  height:1em;
+}
 .mapboxgl-ctrl-geocoder {
   width: 100%!important;
   max-width: 100%!important;

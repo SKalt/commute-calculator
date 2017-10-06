@@ -12,8 +12,8 @@ export default function locations(state={}, action){
       [id]: Object.assign({}, action.location, {id})
     });
   } else if (action.type == 'UPDATE_LOCATION'){
-    log(action, nextId(action), nextId(action));
-    return Object.assign({}, state, {[action.id] : action.location});
+    log(action);
+    return Object.assign({}, state, {[action.location.id] : action.location});
   } else if (action.type == 'DELETE_LOCATION') {
     log(action);
     let newState = Object.assign({}, state);
