@@ -1,8 +1,11 @@
 import select from './shorthand.js';
-import debug from './debug.js';
+import {debug} from 'debug';
 const log = debug('app:locationTables');
 import Sortable from 'sortablejs';
-var map, store, events;
+import map from './map.js'
+import store from './store.js'
+import events from './events.js';
+
 const render = {
   text : {
     div(classes, attrs, text){
@@ -97,10 +100,7 @@ class SortableList {
 
 
 //const div = (text, ...classes) => `<div class="${classes}"`
-export default function setupLocationTables(external){
-  map = external.map;
-  store = external.store;
-  events = external.events;
+export default function setupLocationTables(){
   const originsList = new SortableList('origins');
   const destinationsList = new SortableList('destinations');
   events.on('locationUpdate', (e) =>{

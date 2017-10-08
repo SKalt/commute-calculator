@@ -1,4 +1,4 @@
-import debug from './debug.js';
+import {debug} from 'debug';
 import {point} from '@turf/helpers';
 const log = debug('app:mapActions');
 var map, store, events;

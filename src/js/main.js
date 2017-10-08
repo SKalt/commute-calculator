@@ -1,47 +1,25 @@
-/* global mapboxgl, document, MB_ACCESS_TOKEN */
+/* global ENV, document, window */
+import {debug} from 'debug';
+import map from './map.js';
+import events from './events.js';
+import store from './store.js';
 import select from './shorthand.js';
-import debug from './debug.js';
-import {createStore, combineReducers} from 'redux';
-import {setupEvents} from './events.js';
-import setupGeocoder from './geocoder.js';
 import '../css/style.css';
-import setupMapActions from './map-actions.js';
-import setupMapDisplay from './map-display.js';
-import setupLocationTables from './location-tables.js';
 
+if (ENV != 'production'){
+  debug.disable('*');
+  debug.enable('app:*');
+  window.map = map;
+  window.events = events;
+  window.store = store;
+} else {
+  debug.disable();
+}
+
+// import map from './map.js';
 const log = debug('app:main');
 
-import mapMode, {additionType} from './reducers/map-modes.js';
-import locations from './reducers/locations.js';
-
 document.addEventListener('DOMContentLoaded', ()=>{
-  const store = createStore(
-    combineReducers({
-      mapMode,
-      locations,
-      additionType
-    })
-  );
-  const events = new mapboxgl.Evented;
-  mapboxgl.accessToken = MB_ACCESS_TOKEN;
-  var map = new mapboxgl.Map({
-    container: 'map', // container id
-    style: 'mapbox://styles/mapbox/light-v9', // stylesheet location
-    center: [-84.388, 33.749], // starting position [lng, lat]
-    zoom: 9 // starting zoom
-  });
-
-
-  let dependencyInjections = {map, store, events};
-  [
-    setupEvents, setupGeocoder, setupMapActions, setupMapDisplay,
-    setupLocationTables
-  ].forEach(
-    setup => {
-      log(setup);
-      setup(dependencyInjections);
-    }
-  );
   ['origins', 'destinations'].forEach(
     mode => select.byId('add-' + mode)
       .addEventListener(

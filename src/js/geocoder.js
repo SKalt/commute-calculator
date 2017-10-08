@@ -1,10 +1,12 @@
 /*global mapboxgl, MapboxGeocoder*/
 import select from './shorthand.js';
-import debug from './debug.js';
+import {debug} from 'debug';
 const log = debug('app:geocode');
-var map, events, store;
+import map from './map.js';
+//var map,
+var events, store;
 export default function setupGeocoder(external){
-  map = external.map;
+  // map = external.map;
   events = external.events;
   store = external.store;
 

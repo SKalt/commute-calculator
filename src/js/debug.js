@@ -1,9 +1,17 @@
 /* global ENV */
-import {debug} from 'debug';
+const dbg = require('debug');
+debugger;
+import map from './map.js';
+import events from './events.js';
+import store from './store.js';
 if (ENV != 'production'){
-  debug.disable('*');
-  debug.enable('app:*');
+  dbg.disable('*');
+  dbg.enable('app:*');
+  window.map = map;
+  window.events = events;
+  window.store = store;
 } else {
-  debug.disable();
+  dbg.disable();
 }
-export default debug;
+
+export default dbg;

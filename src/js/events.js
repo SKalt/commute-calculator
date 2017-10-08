@@ -1,10 +1,11 @@
-import debug from './debug.js';
-import pass from './shorthand.js';
+import {debug} from 'debug';
+import {pass} from './shorthand.js';
+import store from './store.js';
 
 const log = debug('app:redux');
-var old = {};
-var current = {};
-var events, store;
+var old = store.getState();
+var current = store.getState();
+const events = new mapboxgl.Evented;
 
 const lookup = (obj, ...path) => {
   if (!obj || !path.length ) return undefined;
@@ -29,21 +30,17 @@ function onChangeOf(...path){
   }
 }
 
-export function setupEvents(external){
-  events = external.events;
-  store = external.store;
-  old = current = store.getState();
-  log('initial state:', store.getState());
-  store.subscribe(()=>log('===========', store.getState()));
-  store.subscribe(()=>{
-    old = current;
-    current = store.getState();
-    onChangeOf('mapMode').emit('mapModeChange', mode => ({mode}));
-    onChangeOf('additionType').emit(
-      'mapModeChange',
-      additionType => Object.assign({}, additionType, {mode:'ADD_LOCATIONS'})
-    );
-    onChangeOf('locations').emit('locationUpdate', locations=>({locations}));
-  });
-  //store.dispatch({type:'REMOVE_LOCATIONS'});
-}
+log('initial state:', store.getState());
+store.subscribe(()=>log('state is now ', store.getState()));
+store.subscribe(()=>{
+  old = current;
+  current = store.getState();
+  onChangeOf('mapMode').emit('mapModeChange', mode => ({mode}));
+  onChangeOf('additionType').emit(
+    'mapModeChange',
+    additionType => Object.assign({}, additionType, {mode:'ADD_LOCATIONS'})
+  );
+  onChangeOf('locations').emit('locationUpdate', locations=>({locations}));
+});
+
+export default events;
