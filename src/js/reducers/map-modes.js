@@ -1,28 +1,16 @@
-import debug from '../debug.js';
-const log = debug('app:mapModes');
-
-const possibleModes = new Set([
-  'ADD_LOCATIONS',
-  'REMOVE_LOCATIONS',
-  'ADD_COMMUTES',
-  'REMOVE_COMMUTES',
-  'SELECT_FROM',
-  'SELECT_TO'
-]);
-
-export function additionType(state='origins', action){
-  if (action.type == 'ADD_LOCATIONS'){
-    return action.locationType || 'origins';
-  }
-  return state;
-}
+import debug from 'debug';
+const log = debug('reducers:mapModes');
 
 export default function mapMode(state='ADD_LOCATIONS', action){
-  if (possibleModes.has(action.type)){
-    log(action.type);
-    return action.type;
-  } else {
-    log(action);
-    return state;
+  if (action.type == 'UPDATE_MAP_MODE'){
+    if(action.mode == 'REMOVE_LOCATIONS'){
+      log('map mode set to: REMOVE_LOCATIONS');
+      return 'REMOVE_LOCATIONS';
+    } else {
+      log('map mode set to: REMOVE_LOCATIONS');
+      return 'ADD_LOCATIONS';
+    }
   }
+  log('pass', action);
+  return state;
 }
