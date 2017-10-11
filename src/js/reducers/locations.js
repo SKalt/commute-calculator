@@ -1,6 +1,7 @@
 import {debug} from 'debug';
 import {combineReducers} from 'redux';
-const log = debug('app:locations');
+debug.enable('*');
+const log = debug('reducers:locations');
 import {v4} from 'uuid';
 //const actions = new Set(['ADD', 'UPDATE', 'DELETE'].map(s=>`${s}_LOCATION`));
 const getId = action =>{
@@ -8,12 +9,12 @@ const getId = action =>{
   return action.id;
 };
 
-const logIdInclusion = (state, action, index) =>{
-  log(`Id ${getId(action)} ${getId(action) in state ? '': 'not'} in ${index} `);
-};
+// const logIdInclusion = (state, action, index) =>{
+//   log(`Id ${getId(action)} ${getId(action) in state ? '': 'not'} in ${index} `);
+// };
 
 const add = (state, action, lookup, index) =>{
-  logIdInclusion(state, action, index);
+  //logIdInclusion(state, action, index);
   return Object.assign({}, state, {[getId(action)]:lookup(action)});
 };
 
@@ -39,8 +40,8 @@ const isAddition = action => {
 // }
 
 function geometries(state={}, action){
-  // ids <=> points
   if (isAddition(action)) {
+    // log('geom', state, add(state, action, a=>a.geometry, 'points'));
     return add(state, action, a=>a.geometry, 'points');
   }
   //  else if (action.type == 'REMOVE_LOCATION'){
@@ -51,6 +52,7 @@ function geometries(state={}, action){
 
 function addresses(state={}, action){
   if (isAddition(action) || action.type == 'UPDATE_ADDRESS'){ // for reverse-geocoding returns
+    //log('addr', state, add(state, action, a=>a.address || a.properties.address, 'addresses'));
     return add(state, action, a=>a.address || a.properties.address, 'addresses');
   }
   // else if (action.type == 'REMOVE_LOCATION'){
@@ -61,6 +63,7 @@ function addresses(state={}, action){
 
 function notes(state={}, action={}){
   if (isAddition(action) || action.type == 'UPDATE_LOCATION'){
+    // log('notes', state, add(state, action, a=>a.properties.notes, 'notes'));
     return add(state, action, a=>a.properties.notes, 'notes');
   }
   // else if (action.type == 'REMOVE_LOCATION'){
@@ -71,6 +74,7 @@ function notes(state={}, action={}){
 
 function ids(state={}, action={}){
   if (isAddition(action)){
+    // log('ids',state, add(state, action, ()=>true, 'ids'));
     return add(state, action, ()=>true, 'ids');
   } else if (action.type == 'REMOVE_LOCATION'){
     return add(state, action, ()=>false, 'ids');
@@ -82,6 +86,7 @@ function type(type){
   const TYPE = type.toUpperCase();
   return (state={}, action) => {
     if (action.type == `ADD_${TYPE}`){
+      // log(type, state, add(state, action, ()=>true, type));
       return add(state, action, ()=>true, type);
     }
     else if (action.type == `REMOVE_${TYPE}`){

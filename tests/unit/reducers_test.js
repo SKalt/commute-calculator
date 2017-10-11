@@ -4,10 +4,10 @@ import locations from '../../src/js/reducers/locations.js';
 import commutes from '../../src/js/reducers/commutes.js';
 import selection from '../../src/js/reducers/selection.js';
 import mapMode from '../../src/js/reducers/map-modes.js';
-import {point} from '@turf/helpers'
-// command is
-// mocha --require mock-local-storage tests/unit/reducers_test.js --compilers js:babel-core/register
-
+import {point} from '@turf/helpers';
+import fs from 'fs';
+import {join} from 'path';
+// console.log(__dirname);
 // describe('importing', function(){
 //   it('works', function(){
 //     console.log(store, store.getState);
@@ -34,32 +34,80 @@ const loc2 = point([2,2], {
 });
 
 
-describe('locations', ()=>{
+describe('#locations', ()=>{
   it('should correctly add a location', ()=>{
     let action = Object.assign({}, loc0, {type:'ADD_ORIGIN'});
     const store = createStore(locations);
     store.dispatch(action);
     let id = action.id; // from getId(action)
-    const expected = {
-      destinations:{},
-      origins:{[id]:true},
-      ids: {[id]:true},
-      notes: {[id]:loc0.properties.notes},
-      geometries: {[id]:loc0.geometry},
-      addresses: {[id]: loc0.properties.address},
+    let expected = {
+      'origins': { [id]: true },
+      'destinations': {},
+      'prelim': {},
+      'notes': { [id]: 0 },
+      'geometries': {
+        [id]: {
+          'type': 'Point',
+          'coordinates': [ 0, 0 ]
+        }
+      },
+      'addresses': {
+        [id]: '1 first st, footown, BA, BAZ'
+      },
+      'ids': {
+        [id]: true
+      }
     };
+
     assert.deepEqual(store.getState(), expected);
     action = Object.assign({}, loc1, {type:'ADD_DESTINATION'});
     store.dispatch(action);
-    id = Object.keys(store.getState())[1];
-    expected.ids[id] = expected.destinations[id] = true;
-    expected.notes[id] = loc1.properties.notes;
-    expected.geometries[id] = loc1.geometry;
-    expected.addresses[id] = loc1.properties.address;
+    let id2 = action.id;
+    expected = {
+      'origins': {
+        [id]: true
+      },
+      'destinations': {
+        [id2]: true
+      },
+      'prelim': {},
+      'notes': {
+        [id]: 0,
+        [id2]: null
+      },
+      'geometries': {
+        [id]: {
+          'type': 'Point', 'coordinates': [ 0, 0 ]
+        },
+        [id2]: {
+          'type': 'Point', 'coordinates': [ 1, 1 ]
+        }
+      },
+      'addresses': {
+        [id]: '1 first st, footown, BA, BAZ',
+        [id2]: '234 fury rd, Mad, MA'
+      },
+      'ids': {
+        [id]: true,
+        [id2]: true
+      }
+    };
     assert.deepEqual(store.getState(), expected);
   });
   it('should correctly remove a location', ()=>{
-
+    let action = Object.assign(
+      {id:'b4e82757-d749-479d-828c-deb74d915aed'},
+      loc0,
+      {type:'REMOVE_LOCATION'}
+    );
+    let init = JSON.parse(
+      fs.readFileSync(join(__dirname, '/fixtures/init.json'), 'utf8')
+    );
+    const store = createStore( locations, init );
+    store.dispatch(action);
+    let expected = Object.assign({}, init);
+    expected.ids['b4e82757-d749-479d-828c-deb74d915aed'] = false;
+    assert.deepEqual(store.getState(), expected);
   });
   it('should correctly update a location\'s notes', ()=>{});
   it('should correctly update a location\'s type', ()=>{});
