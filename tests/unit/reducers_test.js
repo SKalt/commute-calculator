@@ -213,6 +213,11 @@ describe('map-modes', ()=>{
   });
 });
 describe('selection', ()=>{
-  it('should correctly select a new location', ()=>{});
-  it('should correctly select a new commute', ()=>{});
+  it('should correctly select a new location', ()=>{
+    const store = createStore(selection);
+    let action = {type:'SELECT', selectionType:'location', id:'fakeid1'};
+    store.dispatch(action);
+    assert.equal(store.getState().id, 'fakeid1');
+    assert.equal(store.getState().type, 'location');
+  });
 });
