@@ -109,7 +109,21 @@ describe('#locations', ()=>{
     expected.ids['b4e82757-d749-479d-828c-deb74d915aed'] = false;
     assert.deepEqual(store.getState(), expected);
   });
-  it('should correctly update a location\'s notes', ()=>{});
+  it('should correctly update a location\'s notes', ()=>{
+    let action = Object.assign(
+      {id:'b4e82757-d749-479d-828c-deb74d915aed'},
+      {properties:{notes: 'updated'}},
+      {type:'UPDATE_LOCATION'}
+    );
+    let init = JSON.parse(
+      fs.readFileSync(join(__dirname, '/fixtures/init.json'), 'utf8')
+    );
+    const store = createStore( locations, init );
+    store.dispatch(action);
+    let expected = Object.assign({}, init);
+    expected.notes['b4e82757-d749-479d-828c-deb74d915aed'] = 'updated';
+    assert.deepEqual(store.getState(), expected);
+  });
   it('should correctly update a location\'s type', ()=>{});
   it('should correctly update a location\'s geometry', ()=>{});
 });
