@@ -1,24 +1,16 @@
 {
-  "origins": {
-    "b4e82757-d749-479d-828c-deb74d915aed": true
-  },
-  "destinations": {
-    "ea920c40-6b3a-438e-8330-12b5d289f30f": true
-  },
-  "prelim": {},
   "notes": {
-    "b4e82757-d749-479d-828c-deb74d915aed": 0,
-    "ea920c40-6b3a-438e-8330-12b5d289f30f": null
+    "b44e296b-efb6-4921-a737-ea3446a52d62": 0
   },
   "geometries": {
-    "b4e82757-d749-479d-828c-deb74d915aed": {
+    "b44e296b-efb6-4921-a737-ea3446a52d62": {
       "type": "Point",
       "coordinates": [
         0,
         0
       ]
     },
-    "ea920c40-6b3a-438e-8330-12b5d289f30f": {
+    "9d995e44-e018-4e2e-9a15-efe323979a7f": {
       "type": "Point",
       "coordinates": [
         1,
@@ -27,11 +19,15 @@
     }
   },
   "addresses": {
-    "b4e82757-d749-479d-828c-deb74d915aed": "1 first st, footown, BA, BAZ",
-    "ea920c40-6b3a-438e-8330-12b5d289f30f": "234 fury rd, Mad, MA"
+    "b44e296b-efb6-4921-a737-ea3446a52d62": "1 first st, footown, BA, BAZ",
+    "9d995e44-e018-4e2e-9a15-efe323979a7f": "234 fury rd, Mad, MA"
   },
   "ids": {
-    "b4e82757-d749-479d-828c-deb74d915aed": true,
-    "ea920c40-6b3a-438e-8330-12b5d289f30f": true
+    "b44e296b-efb6-4921-a737-ea3446a52d62": true,
+    "9d995e44-e018-4e2e-9a15-efe323979a7f": true
+  },
+  "types": {
+    "b44e296b-efb6-4921-a737-ea3446a52d62": "origin",
+    "9d995e44-e018-4e2e-9a15-efe323979a7f": "destination"
   }
 }

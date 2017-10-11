@@ -7,6 +7,10 @@ import mapMode from '../../src/js/reducers/map-modes.js';
 import {point} from '@turf/helpers';
 import fs from 'fs';
 import {join} from 'path';
+let init = JSON.parse(
+  fs.readFileSync(join(__dirname, '/fixtures/init.json'), 'utf8')
+);
+
 // console.log(__dirname);
 // describe('importing', function(){
 //   it('works', function(){
@@ -36,14 +40,13 @@ const loc2 = point([2,2], {
 
 describe('#locations', ()=>{
   it('should correctly add a location', ()=>{
-    let action = Object.assign({}, loc0, {type:'ADD_ORIGIN'});
+    let action = Object.assign(
+      {}, loc0, {type:'ADD_LOCATION'}, {locationType:'origin'}
+    );
     const store = createStore(locations);
     store.dispatch(action);
     let id = action.id; // from getId(action)
     let expected = {
-      'origins': { [id]: true },
-      'destinations': {},
-      'prelim': {},
       'notes': { [id]: 0 },
       'geometries': {
         [id]: {
@@ -56,32 +59,20 @@ describe('#locations', ()=>{
       },
       'ids': {
         [id]: true
-      }
+      },
+      'types': { [id]: 'origin' }
     };
-
-    assert.deepEqual(store.getState(), expected);
-    action = Object.assign({}, loc1, {type:'ADD_DESTINATION'});
+    // console.log(JSON.stringify(store.getState(), null, 2));
+    assert.deepEqual(store.getState(), expected, 'unexpected state change');
+    action = Object.assign({}, loc1, {type:'ADD_LOCATION', locationType:'destination'});
     store.dispatch(action);
     let id2 = action.id;
     expected = {
-      'origins': {
-        [id]: true
-      },
-      'destinations': {
-        [id2]: true
-      },
-      'prelim': {},
-      'notes': {
-        [id]: 0,
-        [id2]: null
-      },
+      'notes': { [id]: 0 },
+      'types': { [id]: 'origin', [id2]:'destination' },
       'geometries': {
-        [id]: {
-          'type': 'Point', 'coordinates': [ 0, 0 ]
-        },
-        [id2]: {
-          'type': 'Point', 'coordinates': [ 1, 1 ]
-        }
+        [id]: { 'type': 'Point', 'coordinates': [ 0, 0 ] },
+        [id2]: { 'type': 'Point', 'coordinates': [ 1, 1 ] }
       },
       'addresses': {
         [id]: '1 first st, footown, BA, BAZ',
@@ -92,40 +83,60 @@ describe('#locations', ()=>{
         [id2]: true
       }
     };
+    // console.log(JSON.stringify(store.getState(), null, 2));
     assert.deepEqual(store.getState(), expected);
   });
   it('should correctly remove a location', ()=>{
-    let action = Object.assign(
-      {id:'b4e82757-d749-479d-828c-deb74d915aed'},
-      loc0,
-      {type:'REMOVE_LOCATION'}
-    );
+    let id = 'b44e296b-efb6-4921-a737-ea3446a52d62';
+    let action = Object.assign({id}, loc0, {type:'REMOVE_LOCATION'});
     let init = JSON.parse(
       fs.readFileSync(join(__dirname, '/fixtures/init.json'), 'utf8')
     );
     const store = createStore( locations, init );
     store.dispatch(action);
+    // console.log(JSON.stringify(store.getState(), null, 2));
     let expected = Object.assign({}, init);
-    expected.ids['b4e82757-d749-479d-828c-deb74d915aed'] = false;
-    assert.deepEqual(store.getState(), expected);
+    expected.ids[id] = false;
+    assert.deepEqual(store.getState().ids, expected.ids);
   });
   it('should correctly update a location\'s notes', ()=>{
+    let id = 'b44e296b-efb6-4921-a737-ea3446a52d62';
     let action = Object.assign(
-      {id:'b4e82757-d749-479d-828c-deb74d915aed'},
+      {id},
       {properties:{notes: 'updated'}},
       {type:'UPDATE_LOCATION'}
     );
-    let init = JSON.parse(
-      fs.readFileSync(join(__dirname, '/fixtures/init.json'), 'utf8')
-    );
     const store = createStore( locations, init );
     store.dispatch(action);
+    console.log(JSON.stringify(store.getState(), null, 2));
     let expected = Object.assign({}, init);
-    expected.notes['b4e82757-d749-479d-828c-deb74d915aed'] = 'updated';
+    expected.notes[id] = 'updated';
     assert.deepEqual(store.getState(), expected);
   });
-  it('should correctly update a location\'s type', ()=>{});
-  it('should correctly update a location\'s geometry', ()=>{});
+  it('should correctly update a location\'s type', ()=>{
+    let id = 'b44e296b-efb6-4921-a737-ea3446a52d62';
+    let action = {
+      id,
+      newType:'destination',
+      type:'UPDATE_LOCATION'
+    };
+    const store = createStore( locations, init );
+    store.dispatch(action);
+    assert.equal(store.getState().types[id], 'destination');
+  });
+  it('should correctly update a location\'s geometry', ()=>{
+    let id = 'b44e296b-efb6-4921-a737-ea3446a52d62';
+    let action = {
+      id,
+      geometry: point([100, 100]).geometry,
+      type:'UPDATE_LOCATION'
+    };
+    const store = createStore( locations, init );
+    let expected = Object.assign({}, init);
+    expected.geometries[id] = action.geometry;
+    store.dispatch(action);
+    assert.deepEqual(store.getState(), expected, 'unexpected state');
+  });
 });
 
 describe('commutes', ()=>{

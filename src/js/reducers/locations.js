@@ -1,7 +1,7 @@
 import {debug} from 'debug';
 import {combineReducers} from 'redux';
 debug.enable('*');
-const log = debug('reducers:locations');
+// const log = debug('reducers:locations');
 import {v4} from 'uuid';
 //const actions = new Set(['ADD', 'UPDATE', 'DELETE'].map(s=>`${s}_LOCATION`));
 const getId = action =>{
@@ -13,7 +13,7 @@ const getId = action =>{
 //   log(`Id ${getId(action)} ${getId(action) in state ? '': 'not'} in ${index} `);
 // };
 
-const update = (state, action, value, index) => {
+const update = (state, action, value/*, index*/) => {
   //logIdInclusion(state, action, index);
   return Object.assign({}, state, {[getId(action)]:value});
 };
@@ -24,10 +24,10 @@ const update = (state, action, value, index) => {
 //   return Object.assign({}, delete temp[action.id] && temp);
 // };
 const pass = ()=>{};
-const removal = (state, {id}) => {
-  let newState = Object.assign({}, state);
-  return id ? (delete newState[id]) && newState : newState;
-};
+// const removal = (state, {id}) => {
+//   let newState = Object.assign({}, state);
+//   return id ? (delete newState[id]) && newState : newState;
+// };
 const notNone = value => (value !== undefined) && (value !== null);
 const isUpdate = action => { //TODO: refactor -> isUpdate
   return action.type == 'ADD_LOCATION'
@@ -51,17 +51,22 @@ const geometries = (state={}, action) => {
 const addresses = (state={}, action) => {
   return generic(
     state, action,
-    action=>action.address || action.properties.address
+    action=>action.address || (action.properties || {}).address
   );
 };
 const notes = (state={}, action) => {
-  return generic(state, action, action=>action.properties.notes);
+  return generic(state, action, action=>(action.properties || {}).notes);
 };
 
-const ids = (state={}, action) => generic(state, action, ()=>true, ()=>false);
+const ids = (state={}, action) => {
+  return generic(
+    state, action, ()=>true,
+    (state, action)=>update(state, action, false)
+  );
+};
 
 const types = (state={}, action) => {
-  return generic(state, action, action=>action.newType);
+  return generic(state, action, action=>action.newType || action.locationType);
 };
 
 export default combineReducers({ notes, geometries, addresses, ids, types });
