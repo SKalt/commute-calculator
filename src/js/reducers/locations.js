@@ -13,9 +13,9 @@ const getId = action =>{
 //   log(`Id ${getId(action)} ${getId(action) in state ? '': 'not'} in ${index} `);
 // };
 
-const add = (state, action, lookup, index) =>{
+const update = (state, action, value, index) => {
   //logIdInclusion(state, action, index);
-  return Object.assign({}, state, {[getId(action)]:lookup(action)});
+  return Object.assign({}, state, {[getId(action)]:value});
 };
 
 // const remove = (state, action, index) => {
@@ -23,83 +23,45 @@ const add = (state, action, lookup, index) =>{
 //   const temp =  Object.assign({}, state);
 //   return Object.assign({}, delete temp[action.id] && temp);
 // };
-
-const isAddition = action => {
-  return action.type == 'ADD_ORIGIN'
-    ||   action.type == 'ADD_DESTINATION';
+const pass = ()=>{};
+const removal = (state, {id}) => {
+  let newState = Object.assign({}, state);
+  return id ? (delete newState[id]) && newState : newState;
+};
+const notNone = value => (value !== undefined) && (value !== null);
+const isUpdate = action => { //TODO: refactor -> isUpdate
+  return action.type == 'ADD_LOCATION'
+    ||   action.type == 'UPDATE_LOCATION';
 };
 
-// function generic(state={}, action={}, lookup, check){
-//   const value = action[lookup];
-//   if (!check || check(value)){
-//     if (isAddition(action) && value != null && value != undefined){
-//       return add(state, action, value);
-//     }
-//   }
-//   return state;
-// }
-
-function geometries(state={}, action){
-  if (isAddition(action)) {
-    // log('geom', state, add(state, action, a=>a.geometry, 'points'));
-    return add(state, action, a=>a.geometry, 'points');
-  }
-  //  else if (action.type == 'REMOVE_LOCATION'){
-  //   return remove(state, action);
-  // }
-  return state;
-}
-
-function addresses(state={}, action){
-  if (isAddition(action) || action.type == 'UPDATE_ADDRESS'){ // for reverse-geocoding returns
-    //log('addr', state, add(state, action, a=>a.address || a.properties.address, 'addresses'));
-    return add(state, action, a=>a.address || a.properties.address, 'addresses');
-  }
-  // else if (action.type == 'REMOVE_LOCATION'){
-  //   return remove(state, action);
-  // }
-  return state;
-}
-
-function notes(state={}, action={}){
-  if (isAddition(action) || action.type == 'UPDATE_LOCATION'){
-    // log('notes', state, add(state, action, a=>a.properties.notes, 'notes'));
-    return add(state, action, a=>a.properties.notes, 'notes');
-  }
-  // else if (action.type == 'REMOVE_LOCATION'){
-  //   return remove(state, action);
-  // }
-  return state;
-}
-
-function ids(state={}, action={}){
-  if (isAddition(action)){
-    // log('ids',state, add(state, action, ()=>true, 'ids'));
-    return add(state, action, ()=>true, 'ids');
+function generic(state={}, action={}, lookup=pass, removal){
+  if (isUpdate(action)){
+    let value = lookup(action);
+    if (notNone(value)) return update(state, action, value);
   } else if (action.type == 'REMOVE_LOCATION'){
-    return add(state, action, ()=>false, 'ids');
+    if (removal) return removal(state, action);
   }
   return state;
 }
 
-function type(type){
-  const TYPE = type.toUpperCase();
-  return (state={}, action) => {
-    if (action.type == `ADD_${TYPE}`){
-      // log(type, state, add(state, action, ()=>true, type));
-      return add(state, action, ()=>true, type);
-    }
-    else if (action.type == `REMOVE_${TYPE}`){
-      let temp = Object.assign({}, state);
-      return (delete temp[getId(action)]) && temp;
-    }
-    return state;
-  };
-}
-const origins = type('origin');
-const destinations = type('destination');
-const prelim = type('prelim');
+const geometries = (state={}, action) => {
+  return generic(state, action, action => action.geometry);
+};
 
-export default combineReducers({
-  origins, destinations, prelim, notes, geometries, addresses, ids
-});
+const addresses = (state={}, action) => {
+  return generic(
+    state, action,
+    action=>action.address || action.properties.address
+  );
+};
+const notes = (state={}, action) => {
+  return generic(state, action, action=>action.properties.notes);
+};
+
+const ids = (state={}, action) => generic(state, action, ()=>true, ()=>false);
+
+const types = (state={}, action) => {
+  return generic(state, action, action=>action.newType);
+};
+
+export default combineReducers({ notes, geometries, addresses, ids, types });
