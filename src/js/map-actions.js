@@ -3,21 +3,30 @@ import {point} from '@turf/helpers';
 const log = debug('app:mapActions');
 var map, store, events;
 const params = {layers:['locations']};
-const add = {
-  location(e, type){
-    log(e, type);
-    let {lng, lat} = e.lngLat;
-    store.dispatch({
-      type: 'ADD_LOCATION',
-      location:point([lng, lat], {type})
-    });
+
+// preliminary -> locations
+const click = {
+  add:{
+    location(e, type){
+      log(e, type);
+      let {lng, lat} = e.lngLat;
+      store.dispatch({
+        type: 'ADD_LOCATION',
+        location:point([lng, lat], {type})
+      });
+    },
+    origin(e){
+      add.location(e, 'origin');
+    },
+    destination(e){
+      log('destination added @' + JSON.stringify(e.lngLat));
+      add.location(e, 'destination');
+    }
   },
-  origin(e){
-    add.location(e, 'origin');
-  },
-  destination(e){
-    log('destination added --------------');
-    add.location(e, 'destination');
+  remove: {
+    location(e){
+
+    }
   }
 };
 

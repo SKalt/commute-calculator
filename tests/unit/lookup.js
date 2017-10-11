@@ -22,4 +22,4 @@ describe('lookup', function(){
     assert.ok(lookup(a, 'a', 'foo') == undefined);
     assert.equal(lookup(a, 'a'), a.a);
   });
-})
+});

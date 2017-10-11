@@ -1,12 +1,10 @@
 import {debug} from 'debug';
 import {combineReducers} from 'redux';
 const log = debug('app:locations');
-
+import {v4} from 'uuid';
 //const actions = new Set(['ADD', 'UPDATE', 'DELETE'].map(s=>`${s}_LOCATION`));
-var nextId = 0;
-
 const getId = action =>{
-  if (action.id == undefined) action.id = nextId++;
+  if (action.id == undefined) action.id = v4();
   return action.id;
 };
 
@@ -42,7 +40,7 @@ const isAddition = action => {
 
 function geometries(state={}, action){
   // ids <=> points
-  if (isAddition) {
+  if (isAddition(action)) {
     return add(state, action, a=>a.geometry, 'points');
   }
   //  else if (action.type == 'REMOVE_LOCATION'){
@@ -63,7 +61,7 @@ function addresses(state={}, action){
 
 function notes(state={}, action={}){
   if (isAddition(action) || action.type == 'UPDATE_LOCATION'){
-    return add(state, action, a=>a.notes, 'notes');
+    return add(state, action, a=>a.properties.notes, 'notes');
   }
   // else if (action.type == 'REMOVE_LOCATION'){
   //   return remove(state, action);
@@ -73,21 +71,22 @@ function notes(state={}, action={}){
 
 function ids(state={}, action={}){
   if (isAddition(action)){
-    add(state, action, ()=>true, 'ids');
+    return add(state, action, ()=>true, 'ids');
   } else if (action.type == 'REMOVE_LOCATION'){
-    add(state, action, ()=>false, 'ids');
+    return add(state, action, ()=>false, 'ids');
   }
   return state;
 }
 
 function type(type){
   const TYPE = type.toUpperCase();
-  return (state={}, action)=>{
+  return (state={}, action) => {
     if (action.type == `ADD_${TYPE}`){
       return add(state, action, ()=>true, type);
     }
     else if (action.type == `REMOVE_${TYPE}`){
-      return add(state, action, ()=>false, type);
+      let temp = Object.assign({}, state);
+      return (delete temp[getId(action)]) && temp;
     }
     return state;
   };
