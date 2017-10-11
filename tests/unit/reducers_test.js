@@ -7,9 +7,6 @@ import mapMode from '../../src/js/reducers/map-modes.js';
 import {point} from '@turf/helpers';
 import fs from 'fs';
 import {join} from 'path';
-let init = JSON.parse(
-  fs.readFileSync(join(__dirname, '/fixtures/init.json'), 'utf8')
-);
 
 // console.log(__dirname);
 // describe('importing', function(){
@@ -39,6 +36,9 @@ const loc2 = point([2,2], {
 
 
 describe('#locations', ()=>{
+  let init = JSON.parse(
+    fs.readFileSync(join(__dirname, '/fixtures/locations-init.json'), 'utf8')
+  );
   it('should correctly add a location', ()=>{
     let action = Object.assign(
       {}, loc0, {type:'ADD_LOCATION'}, {locationType:'origin'}
@@ -89,15 +89,13 @@ describe('#locations', ()=>{
   it('should correctly remove a location', ()=>{
     let id = 'b44e296b-efb6-4921-a737-ea3446a52d62';
     let action = Object.assign({id}, loc0, {type:'REMOVE_LOCATION'});
-    let init = JSON.parse(
-      fs.readFileSync(join(__dirname, '/fixtures/init.json'), 'utf8')
-    );
     const store = createStore( locations, init );
     store.dispatch(action);
     // console.log(JSON.stringify(store.getState(), null, 2));
     let expected = Object.assign({}, init);
+    expected.ids = Object.assign({}, expected.ids);
     expected.ids[id] = false;
-    assert.deepEqual(store.getState().ids, expected.ids);
+    assert.deepEqual(store.getState().ids, expected.ids, 'unexpected ids state');
   });
   it('should correctly update a location\'s notes', ()=>{
     let id = 'b44e296b-efb6-4921-a737-ea3446a52d62';
@@ -108,7 +106,7 @@ describe('#locations', ()=>{
     );
     const store = createStore( locations, init );
     store.dispatch(action);
-    console.log(JSON.stringify(store.getState(), null, 2));
+    // console.log(JSON.stringify(store.getState(), null, 2));
     let expected = Object.assign({}, init);
     expected.notes[id] = 'updated';
     assert.deepEqual(store.getState(), expected);
@@ -140,15 +138,79 @@ describe('#locations', ()=>{
 });
 
 describe('commutes', ()=>{
+  let init = JSON.parse(
+    fs.readFileSync(
+      join(
+        __dirname, 'fixtures/commutes-init.json'
+      ),
+      'utf8'
+    )
+  );
   it('should correctly add a commute', ()=>{
-
+    const store = createStore(commutes);
+    let action = {
+      type: 'ADD_COMMUTE',
+      to: 'fakeid1',
+      from: 'fakeid2',
+      mode:'transit',
+      arriveBy: new Date('2017-10-11T04:03:46.722Z').toISOString()
+    };
+    store.dispatch(action);
+    let {id} = action;
+    let expected = {
+      'mode': {[id]: 'transit'},
+      'ids': { [id]: true},
+      'to': { [id]: 'fakeid1'},
+      'from': { [id]: 'fakeid2'},
+      'distance': {},
+      'arriveBy': {[id]: '2017-10-11T04:03:46.722Z' },
+      'departAt': {},
+      'duration': {},
+      'frequency':{}
+    };
+    // console.log(JSON.stringify(store.getState(), null, 2));
+    assert.deepEqual(expected, store.getState(), 'unexpected state');
   });
-  it('should correctly remove a commute', ()=>{});
-  it('should correctly update a commute', ()=>{}); // TODO: check to/from only set on additon
+  it('should correctly remove a commute', ()=>{
+    const store = createStore(commutes, init);
+    let id =  '4648501e-c717-4c1d-ae96-d47327f01fe8';
+    const action = {id, type:'REMOVE_COMMUTE'};
+    store.dispatch(action);
+    // console.log(JSON.stringify(store.getState(), null, 2));
+    let expected = Object.assign({}, init, {ids:{[id]:false}});
+    assert.deepEqual(expected, store.getState());
+  });
+  it('should correctly update a commute', ()=>{
+    const store = createStore(commutes, init);
+    let id =  '4648501e-c717-4c1d-ae96-d47327f01fe8';
+    let action = {id, type:'UPDATE_COMMUTE', duration: 0};
+    store.dispatch(action);
+    // console.log(JSON.stringify(store.getState(), null, 2));
+    let expected = Object.assign({}, init, {duration:{[id]:0}});
+    assert.deepEqual( store.getState(), expected, '0');
+    action = {id, type:'UPDATE_COMMUTE', distance:0};
+    store.dispatch(action);
+    expected = Object.assign({}, store.getState(), {distance: {[id]:0}});
+    assert.deepEqual(expected, store.getState(), '1');
+    action = {id, type:'UPDATE_COMMUTE', frequency:0};
+    store.dispatch(action);
+    expected = Object.assign({}, store.getState(), {frequency: {[id]:0}});
+    assert.deepEqual(expected, store.getState(), '2');
+  });
 });
 
 describe('map-modes', ()=>{
-  it('should correctly swap map modes', ()=>{});
+  it('should correctly swap map modes', ()=>{
+    const store = createStore(mapMode);
+    store.dispatch({type:'UPDATE_MAP_MODE', mode:'REMOVE_LOCATIONS'});
+    assert.equal(store.getState(), 'REMOVE_LOCATIONS');
+    // test swapping while already in a mode;
+    store.dispatch({type:'UPDATE_MAP_MODE', mode:'REMOVE_LOCATIONS'});
+    assert.equal(store.getState(), 'REMOVE_LOCATIONS');
+    //re-swap map-modes
+    store.dispatch({type:'UPDATE_MAP_MODE', mode:'ADD_LOCATIONS'});
+    assert.equal(store.getState(), 'ADD_LOCATIONS');
+  });
 });
 describe('selection', ()=>{
   it('should correctly select a new location', ()=>{});

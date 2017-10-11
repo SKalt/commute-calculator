@@ -1,0 +1,21 @@
+{
+  "mode": {
+    "4648501e-c717-4c1d-ae96-d47327f01fe8": "transit"
+  },
+  "ids": {
+    "4648501e-c717-4c1d-ae96-d47327f01fe8": true
+  },
+  "to": {
+    "4648501e-c717-4c1d-ae96-d47327f01fe8": "fakeid1"
+  },
+  "from": {
+    "4648501e-c717-4c1d-ae96-d47327f01fe8": "fakeid2"
+  },
+  "distance": {},
+  "arriveBy": {
+    "4648501e-c717-4c1d-ae96-d47327f01fe8": "2017-10-11T04:03:46.722Z"
+  },
+  "departAt": {},
+  "duration": {},
+  "frequency": {}
+}

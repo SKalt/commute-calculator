@@ -1,23 +1,17 @@
 import {combineReducers} from 'redux';
 import modes from '../transit-modes';
+import {v4} from 'uuid';
 import debug from 'debug';
 const log = debug('app:commutes');
 
 // load previous commutes from localStorage
 
-const init = JSON.parse(localStorage.getItem('commutes') || '{}');
-var maxId = Math.max(
-  Object.keys(init)
-    .filter(id => /^\d+$/.exec(id))
-    .map(Number)
-);
-log(`initial max id ${maxId}`);
 // const id = (function*(){
 //   while (true) yield maxId++;
 // })();
 
 const getId = action =>{
-  if (action.id == undefined) action.id = maxId++;
+  if (action.id == undefined) action.id = v4();
   return action.id;
 };
 
@@ -50,8 +44,10 @@ const combined = {
     return state;
   }
 };
-let columns = ['to', 'from', 'distance', 'arriveBy', 'departAt', 'duration'];
-for (let column in columns){
+let columns = [
+  'to', 'from', 'distance', 'arriveBy', 'departAt', 'duration', 'frequency'
+];
+for (let column of columns){
   combined[column] = (state={}, action={}) => generic(state, action, column);
 }
 
