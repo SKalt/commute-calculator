@@ -1,5 +1,5 @@
 import {combineReducers} from 'redux';
-import modes from '../transit-modes';
+
 import {v4} from 'uuid';
 import debug from 'debug';
 const log = debug('app:commutes');
@@ -14,8 +14,6 @@ const getId = action =>{
   if (action.id == undefined) action.id = v4();
   return action.id;
 };
-
-const allowedModes = new Set(modes);
 const isUpdate = ({type}) => type == 'ADD_COMMUTE' || type == 'UPDATE_COMMUTE';
 
 const update = (state, action, value) => Object.assign(
@@ -32,9 +30,6 @@ function generic(state, action, lookup, check){
   return state;
 }
 const combined = {
-  mode(state={}, action={}){
-    return generic(state, action, 'mode', value => allowedModes.has(value));
-  },
   ids(state={}, action={}){
     if (action.type == 'ADD_COMMUTE'){
       return update(state, action, true);
@@ -45,7 +40,8 @@ const combined = {
   }
 };
 let columns = [
-  'to', 'from', 'distance', 'arriveBy', 'departAt', 'duration', 'frequency'
+  'to', 'from', 'mode', 'distance', 'arriveBy', 'departAt', 'duration',
+  'frequency'
 ];
 for (let column of columns){
   combined[column] = (state={}, action={}) => generic(state, action, column);
