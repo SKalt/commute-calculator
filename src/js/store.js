@@ -1,11 +1,11 @@
-import {combineReducers, createStore} from 'redux';
-import mapMode, {additionType} from './reducers/map-modes.js';
-import locations from './reducers/locations.js';
+import initStore from './redux.js';
 
-export default createStore(
-  combineReducers({
-    mapMode,
-    locations,
-    additionType
-  })
-);
+//TODO: save state, then load it here
+// var init;
+// function loadIfPresent(){
+//   if (global.window && window.localStorage){
+//     localStorage.
+//   }
+// }
+
+export default initStore();

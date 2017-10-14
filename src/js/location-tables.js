@@ -2,10 +2,11 @@ import select from './shorthand.js';
 import {debug} from 'debug';
 const log = debug('app:locationTables');
 import Sortable from 'sortablejs';
-import map from './map.js'
-import store from './store.js'
+//import map from './map.js';
+import store from './store.js';
 import events from './events.js';
 
+// next time I'm just using vue.
 const render = {
   text : {
     div(classes, attrs, text){

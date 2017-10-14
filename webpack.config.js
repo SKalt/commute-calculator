@@ -33,6 +33,10 @@ module.exports = (env={}) => {
             'file-loader'
           ]
         },
+        {
+          test:/\.vue$/,
+          use: ['vue-loader']
+        }
         // {
         //   test: /\.(hbs|handlebars)$/,
         //   use: [

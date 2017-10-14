@@ -1,6 +1,5 @@
 /* global ENV */
 const dbg = require('debug');
-debugger;
 import map from './map.js';
 import events from './events.js';
 import store from './store.js';

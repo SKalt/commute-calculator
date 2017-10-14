@@ -1,6 +1,6 @@
 import {debug} from 'debug';
 import {combineReducers} from 'redux';
-debug.enable('*');
+// debug.enable('*');
 // const log = debug('reducers:locations');
 import {v4} from 'uuid';
 //const actions = new Set(['ADD', 'UPDATE', 'DELETE'].map(s=>`${s}_LOCATION`));
@@ -60,8 +60,8 @@ const notes = (state={}, action) => {
 
 const ids = (state={}, action) => {
   return generic(
-    state, action, ()=>true,
-    (state, action)=>update(state, action, false)
+    state, action, () => true,
+    (state, action) => update(state, action, false)
   );
 };
 

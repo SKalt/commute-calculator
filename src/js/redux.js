@@ -1,11 +1,13 @@
 import {createStore, combineReducers, applyMiddleware} from 'redux';
+import events from './events.js';
 import mapMode from './reducers/map-modes.js';
 import locations from './reducers/locations.js';
 import commutes from './reducers/commutes.js';
 import selection from './reducers/selection.js';
+import {lookupCommute} from './lookups';
 import {debug} from 'debug';
 // debug.enable('*');
-debug.disable('*')
+debug.enable('*');
 import modes from './transit-modes';
 const allowedModes = new Set(modes);
 // localStorage.getItem('cached_locations_and_commutes')
@@ -29,6 +31,7 @@ export const filter = store => next => action => {
       if (!(action.to in locationIds)) dbg('`to` absent', action);
       if (!(action.from in locationIds)) dbg('`from` absent', action);
       if (!(allowedModes.has(action.mode))) dbg('invalid mode', action);
+      if (Number.isNaN(Date.parse(action.time))) dbg('invalid date', action);
       break;
     case 'LOCATION':
       if (!action.geometry){
@@ -45,8 +48,10 @@ export const filter = store => next => action => {
       if (!(action.id in locationIds)) dbg('locatin @ id absent ', action);
       break;
     case 'COMMUTE':
-      if (action.id in state.commutes.ids) dbg('no commute @ id', action);
-      action.to = action.from = undefined; // will be filtered out in reducer
+      // ensure (to, from, mode, by, time) is unique
+      if (action.id in store.getState().commutes.ids) dbg('no commute @ id', action);
+      action = Object.assign(lookupCommute(action.id, store.getState), action);
+      // fill undefined to, from, byOrAt, mode, time and override with updates
       if (!(allowedModes.has(action.mode))) dbg('invalid mode', action);
       break;
     }
@@ -64,7 +69,15 @@ export const filter = store => next => action => {
       break;
     }
   }
-  return next(action);
+  let result = next(action);
+  return result;
+};
+
+const actionsToEvents = store => next => action =>{
+  debug('rdx:mddlwr:events')('emitting', action);
+  let result = next(action);
+  events.fire(action.type + 'ed', action);
+  return result;
 };
 const logger = store => next => action => {
   debug('rdx:mddlwr')('dispatching', action);
@@ -74,13 +87,13 @@ const logger = store => next => action => {
 };
 
 
-export default createStore(
+export default (init) => createStore(
   combineReducers({
     mapMode,
     locations,
     commutes,
     selection
   }),
-  {},//initialState,
-  applyMiddleware(logger, filter)//middleware
+  init || {},//initialState,
+  applyMiddleware(logger, filter, actionsToEvents)//middleware
 );

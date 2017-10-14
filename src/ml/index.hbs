@@ -9,32 +9,12 @@
 </head>
 <body>
   <div class="container-fluid">
-    <div id="col-left" class="col-md-8 col-sm-12">
-      <div id="map"></div>
-    </div>
-    <div id="col-right" class="col-md-4 col-sm-12">
+    <div id="col-left" class="col-md-4 col-sm-12">
       <div id="geocoder-holder" class="col-xs-12"></div>
-      {{#each htmlWebpackPlugin.options.sections}}
-        <div id="{{this.name}}-section" class="col-xs-12 collapsible">
-          <h3>
-            <span class="col-xs-6">
-              {{this.name}}
-            </span>
-            <a id="add-{{this.name}}" title="{{this.addTitle}}"
-              class="add btn btn-default col-xs-3">
-              +
-            </a>
-            <a id="delete-{{this.name}}" title="{{this.deleteTitle}}"
-              class="delete btn btn-default col-xs-3">
-               -
-            </a>
-          </h3>
-          <div id="{{this.name}}-list" class="sortable col-xs-12"></div>
-        </div>
-      {{/each}}
-      <div class="col-xs-12 results">
-        <a class="btn btn-default col-xs-12">Calculate</a>
-      </div>
+      <div id="app" class="col-xs-12"></div>
+    </div>
+    <div id="col-right" class="col-md-8 col-sm-12">
+      <div id="map"></div>
     </div>
   </div>
   <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.1.1/mapbox-gl-geocoder.min.js'></script>
