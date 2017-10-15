@@ -18,7 +18,7 @@ import location from './location/info.vue';
 export default {
   data:function(){
     log('data', this.getState());
-    return Object.assign({}, this.getState().selection);
+    return Object.assign({selectionType:null}, this.getState().selection);
   },
   components : {
     'commute-info': commute,

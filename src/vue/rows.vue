@@ -10,7 +10,7 @@
         ></location-row>
       </div>
       <div id="destinations-rows" class="col-xs-12">
-        <h3 class="col-xs-12">Destinations</h3>
+        <h3>Destinations</h3>
         <location-row
         v-for="location in destinations"
         :key="location.id"
@@ -18,7 +18,7 @@
         ></location-row>
       </div>
     </div>
-    <div id="commute-rows">
+    <div v-if="commutes.length" id="commute-rows">
       <span class="col-xs-3">from</span>
       <span class="col-xs-3">to</span>
       <span class="col-xs-2">via</span>

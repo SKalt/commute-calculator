@@ -3,23 +3,24 @@
 
 
     <!-- address -->
-    <span class="col-xs-12">{{address}}</span>
+    <h3 class="col-xs-12">{{address || 'Location Info'}}</h3>
     <!-- Notes -->
-    <form>
-      <label>Notes</label>
-      <input
+      <textarea
+      class="col-xs-12"
+      rows=3
+      cols=40
       type="text"
       title="notes"
       placeholder="notes on this location"
       :value="notes"
-      v-model="_note"
+      v-model="notes"
       />
-      <button
+      <button class="btn btn-default"
       @click="updateNotes">
         Save Notes
       </button>
-      <select v-model="_type" @change="updateType">
-        <option disabled value="prelim">Add as a...</option>
+      <select v-model="type" @change="updateType" class="btn btn-default">
+        <option disabled selected value="prelim">Add as a...</option>
         <option
         title="a house or apartment whose commutes you'd like to compare"
         value="origin">
@@ -36,11 +37,10 @@
           amenity
         </option>
       </select>
-      <button
+      <button class="btn btn-default"
       @click="removeLocation">
         delete
       </button>
-    </form>
 
     <!-- name/label? -->
     <!-- type -->
@@ -53,16 +53,21 @@ import {lookupLocation} from '../../js/lookups';
 
 export default {
   // props: [id],
+  created(){
+    debugger;
+  },
   data(){
+    debugger;
     let data = lookupLocation(this.id, this.getState());
-    let _notes = data.notes;
-    let _type = data.types; //locationType?
-    return Object.assign(data, {_notes, _type})
+    // let _notes = data.notes || '';
+    // console.log(_type);
+    data.type = data.type || 'prelim';
+    return Object.assign({id:this.id}, data);
   },
   methods:{
-    updateNote(){
+    updateNotes(){
       this.dispatch({
-        type:'UPDATE_LOCATION', id:this.id, notes: this._notes
+        type:'UPDATE_LOCATION', id:this.id, notes: this.notes
       });
     },
     removeLocation(){
@@ -72,7 +77,7 @@ export default {
     },
     updateType(){
       this.dispatch({
-        type:'UPDATE_LOCATION', id:thid.id, newType:this._type
+        type:'UPDATE_LOCATION', id:thid.id, newType:this.type
       });
     }
   }
