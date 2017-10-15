@@ -28,8 +28,8 @@ select.btn-default {
   padding: 7px 12px;
 }
 
-select.btn-default:hover {
-  background-color: #fff;
+select.btn-default:focus {
+  background-color: #fff!important;
 }
 
 div[contenteditable]:empty::after {
@@ -40,4 +40,5 @@ div[contenteditable]:empty::after {
 div[contenteditable] {
   /*border-color:#ccc;*/
   border:1px solid #ccc;
+  border-radius: 4px;
 }
