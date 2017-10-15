@@ -32,6 +32,12 @@ select.btn-default:hover {
   background-color: #fff;
 }
 
-textarea {
-  resize: horizontal;
+div[contenteditable]:empty::after {
+  content: attr(data-placeholder);
+  color: #ccc;
+}
+
+div[contenteditable] {
+  /*border-color:#ccc;*/
+  border:1px solid #ccc;
 }

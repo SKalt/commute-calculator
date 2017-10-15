@@ -5,16 +5,17 @@
     <!-- address -->
     <h3 class="col-xs-12">{{address || 'Location Info'}}</h3>
     <!-- Notes -->
-      <textarea
+    <div class="col-xs-12">
+      <div contenteditable
       class="col-xs-12"
       rows=3
       cols=40
       type="text"
       title="notes"
-      placeholder="notes on this location"
+      data-placeholder="notes on this location"
       :value="notes"
       v-model="notes"
-      />
+      ></div>
       <button class="btn btn-default"
       @click="updateNotes">
         Save Notes
@@ -46,7 +47,8 @@
     <!-- type -->
     <div id="commutes-from-here" class="col-xs-12">
       </div><!-- to/from rows -->
-</div>
+    </div>
+  </div>
 </template>
 <script>
 import {lookupLocation} from '../../js/lookups';
