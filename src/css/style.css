@@ -19,3 +19,19 @@
   width: 100%!important;
   max-width: 100%!important;
 }
+
+.btn-default {
+  margin: 2px .75px;
+}
+
+select.btn-default {
+  padding: 7px 12px;
+}
+
+select.btn-default:hover {
+  background-color: #fff;
+}
+
+textarea {
+  resize: horizontal;
+}
