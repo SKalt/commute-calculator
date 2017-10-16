@@ -1,86 +1,57 @@
 import {debug} from 'debug';
-import {point} from '@turf/helpers';
-const log = debug('app:mapActions');
-var map, store, events;
-const params = {layers:['locations']};
+// import {point} from '@turf/helpers';
+const log = debug('app:map-actions');
+import map, {} from './map.js';
+import store from './store.js';
+import events from './events.js';
+import Reverse from './geocoder.js';
+var mode = store.getState().mapMode;
+events.on('UPDATE_MAP_MODE', e => mode = e.mode);
+events.on('ADD_LOCATION', e => {
+  map.getSource('locations').setData(/*TODO*/)
+});
+events.on('SELECT', ({id}) => map.setFilter('selected', ['==', '$id', id]));
+const params = {
+  layers:['locations', 'commutes', 'prelim']
+};
 
-// preliminary -> locations
-const click = {
-  add:{
-    location(e, type){
-      log(e, type);
-      let {lng, lat} = e.lngLat;
+const reverse = new Reverse;
+reverse.accessToken = MB_ACCESS_TOKEN;
+
+const addOrSelect = e =>{
+  let features = map.queryRenderedFeatures(e.point, params);
+
+  return new Promise(()=>{
+    if (features.length){
       store.dispatch({
-        type: 'ADD_LOCATION',
-        location:point([lng, lat], {type})
+        type: 'SELECT', selectionType:'location', id:features[0].id
       });
-    },
-    origin(e){
-      add.location(e, 'origin');
-    },
-    destination(e){
-      log('destination added @' + JSON.stringify(e.lngLat));
-      add.location(e, 'destination');
     }
-  },
-  remove: {
-    location(e){
-
+    else {
+      reverse.geocode(e.lngLat).then(featureCollection => {
+        if (featureCollection.features.length != 1){
+          log('odd', featureCollection);
+          if (featureCollection.length == 0) throw new Error('no results');
+          return featureCollection.features[0];
+        }
+      }).then(
+        feature => {
+          store.dispatch(Object.assign(
+            {}, feature, {type:'ADD_LOCATION'},
+            feature.place_name ? {name:feature.place_name } : {}
+          ));
+        });
     }
-  }
+  });
 };
 
-const remove = {
-  location(e){
-    let toRemove = map.queryRenderedFeatures(e.point, params)[0];
-    if (toRemove){
-      store.dispatch({type:'DELETE_LOCATION', locationId:toRemove.locationId});
-    }
-  }
+const remove = (e) => {
+  let feature = map.queryRenderedFeatures(e.point, params)[0];
+  if (feature) store.dispatch({type:'REMOVE_LOCATION', id:feature.id});
 };
 
-const unbind = (...fns) => fns.forEach(fn => map.off('click', fn));
-
-const select = {
-  from(){},
-  to(){} //TODO
-};
-
-const all = [add, remove, select].map(Object.values).reduce((a,b)=>a.concat(b), []);
-all.except = function(fn){
-  this.filter(e => e != fn);
-};
-
-function swap(event){
-  let {mode, additionType} = event;
-  mode = mode || store.getState().mapMode;
-  additionType = additionType || store.getState().additionType;
-  log('***', mode, additionType);
-  if (mode == 'ADD_LOCATIONS'){
-    log(mode);
-    log('---------', additionType, store.getState());
-    if (additionType == 'origins'){
-      log('swap -> origns');
-      unbind(...all);
-      map.on('click', add.origin);
-    } else if (additionType == 'destinations'){
-      unbind(...all);
-      map.on('click', add.destination);
-    }
-  } else if (mode == 'REMOVE_LOCATIONS'){
-    unbind(...all);
-    map.on('click', remove.location);
-  } else {
-    throw new Error('unexpected mode ' + mode);
-  }
+const click = (e) =>{
+  mode == 'remove' ? remove(e) : addOrSelect(e);
 }
 
-
-export default function setupMapActions(external){
-  map = external.map;
-  store = external.store;
-  events = external.events;
-  log(map, store, events);
-  map.on('click', add.origin);
-  events.on('mapModeChange', mode => swap(mode));
-}
+map.on('click', click)

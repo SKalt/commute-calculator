@@ -4,6 +4,7 @@ import store from './store.js';
 import {debug} from 'debug';
 const log = debug('app:geocode');
 import map from './map.js';
+import {stringify} from 'querystring';
 
 let geocoder = new MapboxGeocoder({
   accessToken: mapboxgl.accessToken,
@@ -29,5 +30,28 @@ select.byId('geocoder-holder').appendChild(
   select.first('.mapboxgl-ctrl-geocoder')
 );
 
+export class Reverse {
+  constructor(){
+    let predefined = global.window
+      && window.mapboxgl
+      && mapboxgl.accessToken;
+    this.accessToken = predefined || '';
+  }
+  geocode(lngLatLike={}, opts){
+    let  { lng, lat } = lngLatLike;
+    if (!lng && !lat) [lng, lat] = lngLatLike;
+    if (!lng || !lat) return new Promise(
+      (resolve,reject)=>reject(new Error('missing coordinate(s)'))
+    );
 
-// event handling here...
+    return fetch(
+      `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?` +
+        stringify(Object.assign({access_token:this.accessToken}, opts))
+    ).then(response =>{
+      if (response.ok){
+        return response.json();
+      }
+      throw new Error(`${response.code}:${response.message}`);
+    });
+  }
+}

@@ -1,10 +1,11 @@
 /* global ENV, document, window */
 import {debug} from 'debug';
 import map from './map.js';
-import './geocoder.js'
+import './geocoder.js';
+
 import events from './events.js';
 import store from './store.js';
-import select from './shorthand.js';
+// import select from './shorthand.js';
 import '../css/style.css';
 import Vue from 'vue';
 if (ENV != 'production'){
@@ -36,11 +37,11 @@ Vue.mixin({
   }
 });
 import app from '../vue/App.vue';
-console.log('&&&&&&&&&&&&&&&&&&&', app);
 // import map from './map.js';
 Vue.component(app);
 const log = debug('app:main');
 
 document.addEventListener('DOMContentLoaded', ()=>{
   new Vue(app).$mount('#app');
+  log('app mounted');
 });

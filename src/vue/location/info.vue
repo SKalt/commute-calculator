@@ -52,18 +52,17 @@
 </template>
 <script>
 import {lookupLocation} from '../../js/lookups';
-
+import debug from 'debug';
+const log = debug('info-panel');
 export default {
   // props: [id],
-  created(){
-    debugger;
-  },
   data(){
     debugger;
     let data = lookupLocation(this.id, this.getState());
     // let _notes = data.notes || '';
     // console.log(_type);
     data.type = data.type || 'prelim';
+    log('data', data);
     return Object.assign({id:this.id}, data);
   },
   methods:{
@@ -74,12 +73,12 @@ export default {
     },
     removeLocation(){
       this.dispatch({
-        type:'REMOVE_LOCATION', id:thid.id
+        type:'REMOVE_LOCATION', id:this.id
       });
     },
     updateType(){
       this.dispatch({
-        type:'UPDATE_LOCATION', id:thid.id, newType:this.type
+        type:'UPDATE_LOCATION', id:this.id, newType:this.type
       });
     }
   }

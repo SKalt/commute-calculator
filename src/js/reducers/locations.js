@@ -44,11 +44,13 @@ function generic(state={}, action={}, lookup=pass, removal){
   return state;
 }
 
+const name = (state={}, action={}) => generic(state, action, a=>a.name);
+
 const geometries = (state={}, action) => {
   return generic(state, action, action => action.geometry);
-};
+}; //TODO: refactor
 
-const addresses = (state={}, action) => {
+const addresses = (state={}, action) => { //TODO: refactor -> singular
   return generic(
     state, action,
     action=>action.address || (action.properties || {}).address
@@ -69,4 +71,4 @@ const types = (state={}, action) => {
   return generic(state, action, action=>action.newType || action.locationType);
 };
 
-export default combineReducers({ notes, geometries, addresses, ids, types });
+export default combineReducers({ name, notes, geometries, addresses, ids, types });
