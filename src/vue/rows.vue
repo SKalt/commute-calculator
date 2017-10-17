@@ -5,7 +5,7 @@
         <h3>Origins</h3>
         <location-row
         v-for="location in origins"
-        :"location"
+        v-bind="location"
         :key="location.id"
         type="origin"
         ></location-row>
@@ -14,7 +14,7 @@
         <h3>Destinations</h3>
         <location-row
         v-for="location in destinations"
-        :"location"
+        v-bind="location"
         :key="location.id"
         type="destination"
         ></location-row>
@@ -44,7 +44,7 @@ export default {
     },
     destinations(){
       return this.$store.getters.destinations;
-    }
+    },
     selectedId(){
       return this.$store.state.selection.id;
     },
@@ -57,7 +57,7 @@ export default {
     commutes(){
       return Object.keys(this.$store.getters.includedCommutes)
         .map(id => this.$store.commutes.byId[id])
-        .filter({id, from, to} => {
+        .filter(({id, from, to}) => {
           return [from, to, id].every(_id => _id != selectedId)
         });
     }

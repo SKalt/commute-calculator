@@ -59,16 +59,16 @@
 <script>
 // import events from '../../src/js/events.js';
 import {lookupCommute} from '../../js/lookups.js'
-
+import {mapState} from 'vuex';
 export default {
   props: ['id'],
-  computed: mapState(['commutes', 'byId' this.id]),
+  computed: mapState(['commutes', 'byId', this.id]),
   // created: function(){},
   methods: {
-    ...mapMethods([
-      'updateCommuteDuration',
-      'updateCommuteFrequency'
-    ]),
+    // ...mapMethods([
+    //   'updateCommuteDuration',
+    //   'updateCommuteFrequency'
+    // ]),
     updateTime(time){
       this.$store.dispatch('clone', {by:'time', time});
       // this.remove();

@@ -6,6 +6,9 @@
       "mocha":true,
       "node":true
   },
+  "globals":{
+    "mapboxgl":true
+  },
   "extends": "eslint:recommended",
   "parserOptions": {
     "ecmafeatures":{

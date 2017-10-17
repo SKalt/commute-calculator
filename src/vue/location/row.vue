@@ -14,13 +14,10 @@
 <script>
   import lookupLocation from '../../js/lookups';
   export default {
-    props:['id', 'types', 'address'],
-    data(){
-      return {_type: this.types};
-    },
+    props:['id', 'type', 'address'],
     methods: {
       select(){
-        this.dispatch('select', {
+        this.store.commit('select', {
           id:this.id,
           type: this._type == 'commute' ? 'commute' : 'location'
         });

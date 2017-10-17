@@ -15,7 +15,7 @@
         Save Notes
       </button>
       <select v-model="type" @change="updateType" class="btn btn-default">
-        <option disabled value="prelim">Add as a(n)...</option>
+        <option disabled selected value="prelim">Add as a(n)...</option>
         <option
         title="a house or apartment whose commutes you'd like to compare"
         value="origin">
@@ -48,14 +48,17 @@ const log = debug('info-panel');
 export default {
   props: ['id'],
   computed:{
+    address(){
+      return (this.$store.state.locations.byId[this.id] || {}).address;
+    },
     type: function(){
       return this.$store.state.selection.type;
     },
     alias: function(){
-      return this.$store.state.locations[this.id].alias;
+      return (this.$store.state.locations.byId[this.id] || {}).alias;
     },
     notes: function(){
-      return this.$store.state.locations.byId[this.id].notes;
+      return (this.$store.state.locations.byId[this.id] || {}).notes;
     }
   },
   methods:{
@@ -63,11 +66,14 @@ export default {
       this.$store.commit('removeLocation', {id:this.id});
       this.$store.commit('select', {id:-1, type:'location'});
     },
+    updateNotes(){
+      this.$store.commit('updateLocationType', {id:this.id, notes:this.notes});
+    },
     updateType(){
       this.$store.commit('updateLocationType', {id:this.id, type:this.type});
     },
     updateLocationAlias(){
-      this.$store.commit('updateLocationAlias', {id, this.id, alias:this.alias});
+      this.$store.commit('updateLocationAlias', {id:this.id, alias:this.alias});
     }
   }
 }
