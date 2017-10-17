@@ -19,7 +19,8 @@ const addOrSelect = e =>{
   let features = map.queryRenderedFeatures(e.point, params);
   return new Promise(()=>{
     if (features.length){
-      store.commit('select', {type:'location', id:features[0].id });
+      log(features, 'fount at clicked point');
+      store.commit('select', {type:'location', id:features[0].properties.id });
     } else {
       reverse.geocode(e.lngLat).then(featureCollection => {
         if (featureCollection.features.length != 1){
@@ -50,6 +51,7 @@ const remove = e => {
 };
 
 const click = (e) =>{
+  log(store.state.map.mode);
   store.state.map.mode == 'ADD_LOCATIONS' ? addOrSelect(e):remove(e);
 };
 

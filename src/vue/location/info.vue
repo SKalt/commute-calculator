@@ -3,11 +3,11 @@
     <h3 class="col-xs-12">{{alias || address || 'Location Info'}}</h3>
     <div class="col-xs-12" v-if="address">
       <div contenteditable
-      class="col-xs-12"
+      class="col-xs-12 notes-box"
       type="text"
       title="notes"
       data-placeholder="notes on this location"
-      :content="_notes"
+      :content="notes"
       @input="updateNotes"
       ></div>
       <button class="btn btn-default"
@@ -51,16 +51,15 @@ const log = debug('info-panel');
 export default {
   props: ['id'],
   data(){
-    return {_notes:this.notes};
-  },
-  beforeUpdated(){
-    this.$nextTick(function(){
-      this._notes = this.notes;
-    });
+    return {notes:(this.$store.state.locations.byId[this.id] || {}).notes};
   },
   watch:{
     id(current, old){
-      this.$el.querySelector('div[contenteditable]').innerText = this.notes;
+      console.log('foo');
+      this.notes = (this.$store.state.locations.byId[this.id] || {}).notes;
+      this.$nextTick(()=>{
+        this.$el.querySelector('div.notes-box').innerText = this.notes;
+      });
     }
   },
   computed:{
@@ -72,10 +71,10 @@ export default {
     },
     alias: function(){
       return (this.$store.state.locations.byId[this.id] || {}).alias;
-    },
-    notes: function(){
-      return (this.$store.state.locations.byId[this.id] || {}).notes;
     }
+    // notes: function(){
+    //   return (this.$store.state.locations.byId[this.id] || {}).notes;
+    // }
   },
   methods:{
     removeLocation(){

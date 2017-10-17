@@ -26,6 +26,6 @@ Vue.component(app);
 const log = debug('app:main');
 
 document.addEventListener('DOMContentLoaded', ()=>{
-  new Vue(app).$mount('#app');
+  window.vm = new Vue(app).$mount('#app');
   log('app mounted');
 });
