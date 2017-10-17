@@ -1,0 +1,17 @@
+{
+  "id":"locations-lyr",
+  "source":"locations-src",
+  "type": "circle",
+  "paint":{
+    "circle-radius":10,
+    "circle-color": {
+      "property": "type",
+      "type":"categorical",
+      "stops":[
+        ["origin", "#ccc"],
+        ["amenity", "#eee"],
+        ["destination", "#111"]
+      ]
+    }
+  }
+}
