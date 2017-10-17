@@ -8,9 +8,10 @@
       "property": "type",
       "type":"categorical",
       "stops":[
-        ["origin", "#ccc"],
-        ["amenity", "#eee"],
-        ["destination", "#111"]
+        ["prelim", "#aaa"],
+        ["origin", "#98CE00"],
+        ["amenity", "#AEADF0"],
+        ["destination", "#5A0002"]
       ]
     }
   }
