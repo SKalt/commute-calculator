@@ -1,36 +1,56 @@
 import {v4} from 'uuid';
-
+import {set} from 'vue';
+import debug from 'debug';
+const log = debug('store:locations');
 // mutations
-const add = (state, {address, locationType, coords}) => {
-  let id = address || v4();
-  state.included[id] = true;
-  state.address[id] = address;
-  state.locationType[id] = locationType;
-  state.notes[id] = state.alias[id] = '';
-  state.coords[id] = coords;
-};
 const mutations = {
-  addLocation: add,
-  removeLocation:(state, {id}) => {
-    state.included[id] = false;
+  addLocation(state, payload){
+    payload.id = payload.id || payload.address || v4();
+    if (!(payload.id in state.byId)) {
+      payload.notes = payload.notes || '';
+      payload.alias = payload.alias || '';
+      set(state.byId, payload.id, payload);
+    } else {
+      log('id already present', payload.id);
+    }
+    set(state.included, payload.id, true);
   },
-  updateLocationAlias: (state, {id, alias}) => state.alias[id] = alias,
-  updateLocationType: (state, {id, locationType}) => state.locationType[id] = locationType,
-  updateLocationNotes: (state, {id, notes}) => state.notes[id] = notes,
-  updateLocationCoords:(state, {id, coords}) => state.coords[id] = coords
+  removeLocation:(state, {id}) => {
+    set(state.included, id, false);
+  },
+  updateLocationAlias(state, {id, alias}){
+    set(state.byId[id], 'alias', alias);
+  },
+  updateLocationType(state, {id, type}){
+    set(state.byId[id], 'type', type);
+  },
+  updateLocationNotes(state, {id, notes}){
+    set(state.byId[id], 'notes', notes);
+  },
+  updateLocationCoords(state, {id, coords}){
+    set(state.byId[id], 'coords', coords);
+  }
 };
-// const getters = {
-//   locations(state){
-//     return state.included;
-//   }
-// };
+export const getters = {
+  includedLocations(state){
+    return Object.keys(state.included)
+      .filter(id => state.included[id])
+      .map(id => state.byId[id]);
+  },
+  origins(state, getters){
+    return getters.includedLocations.filter(loc => loc.type === 'origin');
+  },
+  destinations(state, getters){
+    return getters.includedLocations.filter(loc => loc.type !== 'origin');
+  }
+};
 export const initialState =  {
-  included:{}, locationType:{}, address:{}, notes:{}, alias:{}, coords:{}
+  byId:{}, included:{}
 };
 let state = localStorage.getItem('locations') || initialState;
 export const columns = [ 'address', 'locationType', 'notes', 'alias', 'coords' ];
 export {mutations};
-export default {mutations, state};
+export default {mutations, state, getters};
 // state:{ // all map [locationId]: value
 //   ids:{},
 //   alias:{},

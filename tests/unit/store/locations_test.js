@@ -1,71 +1,77 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import oneLocationState from '../fixtures/locations-init.json';
 Vue.use(Vuex);
 import locations, {
-  initialState, mutations
+  initialState, mutations, getters
 } from '../../../src/js/store/locations/index.js';
 import {assert} from 'chai';
-
+const mockStore = (state) => {
+  return new Vuex.Store({
+    modules:{
+      locations:{
+        mutations, getters, state:state || {...initialState}
+      }
+    }
+  })
+}
 describe('selection', ()=>{
   it('correctly initializes', ()=>{
-    const store = new Vuex.Store({modules:{locations}});
+    const store = mockStore();
     //console.log(JSON.stringify(store.state.locations));
     assert.deepEqual(store.state.locations, initialState);
   });
   it('correctly adds a location', ()=>{
-    const store = new Vuex.Store({modules:{locations}});
-    const location = {address:'foo', locationType:'origin', coords:[0,0]};
+    const store = mockStore();
+    const location = {address:'foo', type:'origin', coords:[0,0]};
     store.commit('addLocation', location);
-    //console.log(JSON.stringify(store.state.locations));
+    // console.log(JSON.stringify(store.state.locations, null, 2));
     assert.deepEqual(store.state.locations, {
-      address:{foo:'foo'},
-      locationType:{foo:'origin'},
-      notes:{foo:''},
-      alias:{foo:''},
-      coords:{foo:[0,0]},
+      byId:{
+        foo:{...location, id:'foo'}
+      },
       included:{foo:true}
     });
+    assert.deepEqual(store.getters.origins[0], {
+      ...location, id:'foo', alias:'', notes:''
+    })
+    // console.log(JSON.stringify(store.getters.origins[0], null, 2));
   });
   it('correctly adds another location', ()=>{
-    let locations = {
-      mutations,
-      state:{
-        address:{foo:'foo'},
-        locationType:{foo:'origin'},
-        notes:{foo:''},
-        alias:{foo:''},
-        coords:{foo:[0,0]},
-        included:{foo:true}
-      }
-    };
-    const store = new Vuex.Store({modules:{locations}});
-    store.commit('addLocation', {
+    const store = mockStore(oneLocationState);
+    const location = {
       address:'bar',
       locationType:'destination',
       coords:[1,1]
+    };
+    store.commit('addLocation', location);
+    assert.deepEqual(store.state.locations, {
+      byId:{...oneLocationState.byId,
+        bar:{...location, id:'bar', notes:'', alias:''}
+      },
+      included:{foo:true, bar:true}
     });
-    assert.deepEqual(store.state.locations, {"address":{"foo":"foo","bar":"bar"},"locationType":{"foo":"origin","bar":"destination"},"notes":{"foo":"","bar":""},"alias":{"foo":"","bar":""},"coords":{"foo":[0,0],"bar":[1,1]},"included":{"foo":true,"bar":true}})
   });
   it('correclty removes a location', ()=>{
-    let locations = {
-      mutations,
-      state:{"address":{"foo":"foo","bar":"bar"},"locationType":{"foo":"origin","bar":"destination"},"notes":{"foo":"","bar":""},"alias":{"foo":"","bar":""},"coords":{"foo":[0,0],"bar":[1,1]},"included":{"foo":true,"bar":true}}
-    };
-    const store = new Vuex.Store({modules:{locations}});
+    const store = mockStore(oneLocationState);
     store.commit('removeLocation', {id:'foo'});
     assert(!store.state.locations.included.foo);
   });
   it('correctly updates a location', ()=>{
-    let locations = {
-      mutations,
-      state: {"address":{"foo":"foo","bar":"bar"},"locationType":{"foo":"origin","bar":"destination"},"notes":{"foo":"","bar":""},"alias":{"foo":"","bar":""},"coords":{"foo":[0,0],"bar":[1,1]},"included":{"foo":false,"bar":true}}
-    };
-    const store = new Vuex.Store({modules:{locations}});
+    const store = mockStore(oneLocationState);
     store.commit('updateLocationNotes', {id:'bar', notes:'test'});
     // console.log(JSON.stringify(store.state.locations));
-    assert.equal(store.state.locations.notes.bar, 'test', 'notes not updated');
+    assert.equal(
+      store.state.locations.byId.bar.notes,
+      'test',
+      'notes not updated'
+    );
     store.commit('updateLocationAlias', {id:'foo', alias:'test'});
-    assert.equal(store.state.locations.alias.foo, 'test', 'alias not updated');
+    assert.equal(
+      store.state.locations.byId.foo.alias,
+      'test',
+      'alias not updated'
+    );
     // console.log(JSON.stringify(store.state.locations));
   });
 });

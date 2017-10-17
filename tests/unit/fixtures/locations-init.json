@@ -1,33 +1,18 @@
 {
-  "notes": {
-    "b44e296b-efb6-4921-a737-ea3446a52d62": 0
-  },
-  "geometries": {
-    "b44e296b-efb6-4921-a737-ea3446a52d62": {
-      "type": "Point",
-      "coordinates": [
+  "byId": {
+    "foo": {
+      "address": "foo",
+      "type": "origin",
+      "coords": [
         0,
         0
-      ]
-    },
-    "9d995e44-e018-4e2e-9a15-efe323979a7f": {
-      "type": "Point",
-      "coordinates": [
-        1,
-        1
-      ]
+      ],
+      "id": "foo",
+      "notes": "",
+      "alias": ""
     }
   },
-  "addresses": {
-    "b44e296b-efb6-4921-a737-ea3446a52d62": "1 first st, footown, BA, BAZ",
-    "9d995e44-e018-4e2e-9a15-efe323979a7f": "234 fury rd, Mad, MA"
-  },
-  "ids": {
-    "b44e296b-efb6-4921-a737-ea3446a52d62": true,
-    "9d995e44-e018-4e2e-9a15-efe323979a7f": true
-  },
-  "types": {
-    "b44e296b-efb6-4921-a737-ea3446a52d62": "origin",
-    "9d995e44-e018-4e2e-9a15-efe323979a7f": "destination"
+  "included": {
+    "foo": true
   }
 }
