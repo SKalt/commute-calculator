@@ -11,10 +11,9 @@
       @input="updateNotes"
       ></div>
       <select
-        :value="type"
         @change="e => updateType(e)"
         class="btn btn-default">
-        <option disabled selected value="prelim">Add as a(n)...</option>
+        <option disabled selected hidden value="prelim">Add as a(n)...</option>
         <option
         title="a house or apartment whose commutes you'd like to compare"
         value="origin">
