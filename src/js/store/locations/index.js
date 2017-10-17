@@ -1,10 +1,16 @@
 import {v4} from 'uuid';
-import {set} from 'vue';
+import Vue from 'vue';
 import debug from 'debug';
+debug.enable('store:*');
 const log = debug('store:locations');
+const set = Vue.set;
 // mutations
 const mutations = {
   addLocation(state, payload){
+    if (!payload.coords){
+      log('empy location');
+      return 0;
+    }
     payload.id = payload.id || payload.address || v4();
     if (!(payload.id in state.byId)) {
       payload.notes = payload.notes || '';

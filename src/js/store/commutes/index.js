@@ -122,4 +122,4 @@ export const initialState = {
   included:{}, byId:{}
 };
 let state = localStorage.getItem('commutes') || initialState;
-export default { state, mutations, actions };
+export default { state, mutations, actions, getters };

@@ -6,7 +6,8 @@
 // const log = debug('app:redux');
 // var old = store.getState();
 // var current = store.getState();
-const events = new mapboxgl.Evented;
+import Vue from 'vue';
+const events = new Vue();
 
 // const lookup = (obj, ...path) => {
 //   if (!obj || !path.length ) return undefined;
