@@ -23,6 +23,7 @@ geocoder.on('result', ({result}) => {
   );
   log('location', location);
   store.commit('addLocation', location);
+  store.commit('select', {type:'location', id:location.id});
 });
 map.addControl(geocoder);
 select.byId('geocoder-holder').appendChild(

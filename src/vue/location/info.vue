@@ -1,20 +1,23 @@
 <template>
   <div>
     <h3 class="col-xs-12">{{alias || address || 'Location Info'}}</h3>
-    <div class="col-xs-12">
+    <div class="col-xs-12" v-if="address">
       <div contenteditable
       class="col-xs-12"
       type="text"
       title="notes"
       data-placeholder="notes on this location"
-      :value="notes"
-      v-model="notes"
+      :content="_notes"
+      @input="updateNotes"
       ></div>
       <button class="btn btn-default"
       @click="updateNotes">
         Save Notes
       </button>
-      <select v-model="type" @change="updateType" class="btn btn-default">
+      <select
+        :value="type"
+        @change="e => updateType(e)"
+        class="btn btn-default">
         <option disabled selected value="prelim">Add as a(n)...</option>
         <option
         title="a house or apartment whose commutes you'd like to compare"
@@ -47,6 +50,19 @@ import debug from 'debug';
 const log = debug('info-panel');
 export default {
   props: ['id'],
+  data(){
+    return {_notes:this.notes};
+  },
+  beforeUpdated(){
+    this.$nextTick(function(){
+      this._notes = this.notes;
+    });
+  },
+  watch:{
+    id(current, old){
+      this.$el.querySelector('div[contenteditable]').innerText = this.notes;
+    }
+  },
   computed:{
     address(){
       return (this.$store.state.locations.byId[this.id] || {}).address;
@@ -66,11 +82,19 @@ export default {
       this.$store.commit('removeLocation', {id:this.id});
       this.$store.commit('select', {id:-1, type:'location'});
     },
-    updateNotes(){
-      this.$store.commit('updateLocationType', {id:this.id, notes:this.notes});
+    updateNotes(event){
+      let notes = event.target.innerText;
+      this.$store.commit(
+        'updateLocationNotes',
+        {
+          id:this.id,
+          notes
+        }
+      );
     },
-    updateType(){
-      this.$store.commit('updateLocationType', {id:this.id, type:this.type});
+    updateType(event){
+      let type = event.target.value;
+      this.$store.commit('updateLocationType', {id:this.id, type});
     },
     updateLocationAlias(){
       this.$store.commit('updateLocationAlias', {id:this.id, alias:this.alias});
