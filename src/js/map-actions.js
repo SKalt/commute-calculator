@@ -59,16 +59,28 @@ map.on('click', click);
 map.once('load', ()=>{
   store.subscribe(({type})=>{
     log('mutation:', type);
-    const ofInterest = (type == 'addLocation'
+    const locationsUpdated = (type == 'addLocation'
       || type == 'removeLocation'
       || type == 'updateLocationType');
-    if (ofInterest){
+    if (locationsUpdated){
       log('mutation of interest noted: ', type);
       let data = featureCollection(
         store.getters.includedLocations.map(loc => point(loc.coords, loc))
       );
       map.getSource('locations-src').setData(data);
       log('location geojson updated');
+    } else if (type == 'select') {
+      if (store.state.selection.type == 'location'){
+        map.setFilter(
+          'locations-selection-lyr',
+          ['==', 'id', store.state.selection.id]
+        );
+      } else {
+        map.setFilter(
+          'commutes-selection-lyr',
+          ['==', 'id', store.state.selection.id]
+        );
+      }
     }
   });
 });

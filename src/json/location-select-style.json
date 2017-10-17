@@ -1,0 +1,10 @@
+{
+  "id":"locations-selection-lyr",
+  "type":"circle",
+  "source":"locations-src",
+  "paint":{
+    "circle-radius":10,
+    "circle-opacity":0,
+    "circle-stroke-width":3
+  }
+}
