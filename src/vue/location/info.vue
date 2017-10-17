@@ -49,6 +49,11 @@ export default {
     return {notes:(this.$store.state.locations.byId[this.id] || {}).notes};
   },
   watch:{
+    type(){
+      this.$nextTick(()=>{
+        this.$el.querySelector('select').value = this.type;
+      });
+    },
     id(current, old){
       console.log('foo');
       this.notes = (this.$store.state.locations.byId[this.id] || {}).notes;
@@ -64,7 +69,7 @@ export default {
       return (this.$store.state.locations.byId[this.id] || {}).address;
     },
     type: function(){
-      return this.$store.state.selection.type;
+      return (this.$store.state.locations.byId[this.id] || {}).type;
     },
     alias: function(){
       return (this.$store.state.locations.byId[this.id] || {}).alias;
