@@ -1,10 +1,11 @@
-<template>
+<template language="html">
   <div>
     <div id="location-rows">
       <div id="origins-rows" class="col-xs-12">
         <h3>Origins</h3>
         <location-row
         v-for="location in origins"
+        :"location"
         :key="location.id"
         type="origin"
         ></location-row>
@@ -13,6 +14,7 @@
         <h3>Destinations</h3>
         <location-row
         v-for="location in destinations"
+        :"location"
         :key="location.id"
         type="destination"
         ></location-row>
@@ -36,23 +38,28 @@ import commute from './commute/row.vue';
 import location from './location/row.vue';
 
 export default {
-  data(){
-    let state = store.getState();
-    let selected = state.selection.id;
-    let locations = Object.entries(state.locations.ids)
-      .filter((id, included) => id !== selected && included)
-      .map((id, included) => lookupLocation(id, state));
-    let commutes = Object.entries(state.commutes.ids)
-      .filter((id, included) => id !== selected && included)
-      .map((id, included) => lookupCommute(id, state))
-      .filter(commute => commute.from !== selected && commute.to !== selected );
-    const filter = (type) =>  locations.filter( loc => loc.type == type );
-    let origins = filter('origin');
-    let destinations = filter('destination');
-    return {
-      commutes, // sorting?
-      origins,
-      destinations
+  computed: {
+    origins(){
+      return this.$store.getters.origins;
+    },
+    destinations(){
+      return this.$store.getters.destinations;
+    }
+    selectedId(){
+      return this.$store.state.selection.id;
+    },
+    selectedType(){
+      return this.$store.state.selection.type;
+    },
+    // locations(){
+    //   return this.$store.getters.includedLocations;
+    // },
+    commutes(){
+      return Object.keys(this.$store.getters.includedCommutes)
+        .map(id => this.$store.commutes.byId[id])
+        .filter({id, from, to} => {
+          return [from, to, id].every(_id => _id != selectedId)
+        });
     }
   },
   components: {
@@ -60,5 +67,4 @@ export default {
     'commute-row': commute
   }
 };
-
 </script>

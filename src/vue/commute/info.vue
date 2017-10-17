@@ -1,4 +1,4 @@
-<template>
+<template language="html">
   <div>
     <h3 class="col-xs-12">Commute {{from}} → {{to}}</h3>
     <!-- time -->
@@ -11,7 +11,7 @@
       <span
       class="col-xs-2"
       :class="{active:departAt}"
-      @click="updateTime"
+      @click="updateByOrAt"
       >depart</span>
       <span class="col-xs-1">@</span>
       <input
@@ -61,24 +61,27 @@
 import {lookupCommute} from '../../js/lookups.js'
 
 export default {
-  props: ['commuteId'],
-  data:function(){
-    return lookupCommute(this.commuteId, this.getState());
-  },
-  created: function(){
-    events.$on('REMOVE_LOCATION', function(e){
-      if (e.id == this.commuteId){
-        this.$destroy();
-      }
-    });
-  },
+  props: ['id'],
+  computed: mapState(['commutes', 'byId' this.id]),
+  // created: function(){},
   methods: {
-    updateMode: function(event){
-      let mode = event.target.textContent;
-      this.dispatch({type:'UPDATE_COMMUTE', mode:event.target.dataset.mode});
+    ...mapMethods([
+      'updateCommuteDuration',
+      'updateCommuteFrequency'
+    ]),
+    updateTime(time){
+      this.$store.dispatch('clone', {by:'time', time});
+      // this.remove();
+    },
+    updateMode: function(mode){
+      this.$store.dispatch('clone', {by:'mode', mode});
+      // this.remove();
     },
     remove: function(){
-      this.dispatch({type:'REMOVE_COMMUTE', id:this.id});
+      this.$store.commit('removeCommute', {id:this.id});
+    },
+    updateByOrAt(byOrAt){
+      this.$store.dispatch('clone', {by:'byOrAt', byOrAt})
     }
   }
 };

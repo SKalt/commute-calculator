@@ -1,11 +1,11 @@
-<template v-if="selectionType === 'commute'">
+<template v-if="type === 'commute'">
   <commute-info
   :id="id"
   ></commute-info>
 </template>
 <template v-else>
   <location-info
-  v-show="selectionType !== 'commute'"
+  v-show="type !== 'commute'"
   :id="id"
   ></location-info>
 </template>
@@ -16,9 +16,13 @@ import commute from './commute/info.vue';
 import location from './location/info.vue';
 
 export default {
-  data:function(){
-    log('data', this.getState());
-    return Object.assign({selectionType:null}, this.getState().selection);
+  computed:{
+    id:function() {
+      return this.$store.state.selection.id;
+    },
+    type(){
+      return this.$store.state.selection.type;
+    }
   },
   components : {
     'commute-info': commute,

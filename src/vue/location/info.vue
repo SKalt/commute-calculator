@@ -1,15 +1,9 @@
 <template>
   <div>
-
-
-    <!-- address -->
-    <h3 class="col-xs-12">{{address || 'Location Info'}}</h3>
-    <!-- Notes -->
+    <h3 class="col-xs-12">{{alias || address || 'Location Info'}}</h3>
     <div class="col-xs-12">
       <div contenteditable
       class="col-xs-12"
-      rows=3
-      cols=40
       type="text"
       title="notes"
       data-placeholder="notes on this location"
@@ -21,7 +15,7 @@
         Save Notes
       </button>
       <select v-model="type" @change="updateType" class="btn btn-default">
-        <option disabled selected value="prelim">Add as a...</option>
+        <option disabled value="prelim">Add as a(n)...</option>
         <option
         title="a house or apartment whose commutes you'd like to compare"
         value="origin">
@@ -42,9 +36,6 @@
       @click="removeLocation">
         delete
       </button>
-
-    <!-- name/label? -->
-    <!-- type -->
     <div id="commutes-from-here" class="col-xs-12">
       </div><!-- to/from rows -->
     </div>
@@ -55,31 +46,28 @@ import {lookupLocation} from '../../js/lookups';
 import debug from 'debug';
 const log = debug('info-panel');
 export default {
-  // props: [id],
-  data(){
-    debugger;
-    let data = lookupLocation(this.id, this.getState());
-    // let _notes = data.notes || '';
-    // console.log(_type);
-    data.type = data.type || 'prelim';
-    log('data', data);
-    return Object.assign({id:this.id}, data);
+  props: ['id'],
+  computed:{
+    type: function(){
+      return this.$store.state.selection.type;
+    },
+    alias: function(){
+      return this.$store.state.locations[this.id].alias;
+    },
+    notes: function(){
+      return this.$store.state.locations.byId[this.id].notes;
+    }
   },
   methods:{
-    updateNotes(){
-      this.dispatch({
-        type:'UPDATE_LOCATION', id:this.id, notes: this.notes
-      });
-    },
     removeLocation(){
-      this.dispatch({
-        type:'REMOVE_LOCATION', id:this.id
-      });
+      this.$store.commit('removeLocation', {id:this.id});
+      this.$store.commit('select', {id:-1, type:'location'});
     },
     updateType(){
-      this.dispatch({
-        type:'UPDATE_LOCATION', id:this.id, newType:this.type
-      });
+      this.$store.commit('updateLocationType', {id:this.id, type:this.type});
+    },
+    updateLocationAlias(){
+      this.$store.commit('updateLocationAlias', {id, this.id, alias:this.alias});
     }
   }
 }

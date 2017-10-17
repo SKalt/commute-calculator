@@ -7,7 +7,7 @@
     <span class="col-xs-3">  {{from}}      </span>
     <span class="col-xs-3">  {{to}}        </span>
     <span class="col-xs-1">  {{mode}}      </span>
-    <span class="col-xs-1">  {{byOrAt}}    </span>
+    <span class="col-xs-1">  {{arrival}}    </span>
     <span class="col-xs-2">  {{time}}      </span>
     <span class="col-xs-2">  {{duration}}  </span>
     <!-- <span class="col-xs-1" @click="remove"> X </span> -->
@@ -18,16 +18,18 @@
   import {lookupCommute} from '../../js/lookups';
 
   export default {
-    props:['commuteId'],
-    data: function(){
-      return lookupCommute(commuteId, this.getState());
+    props:['id', 'to', 'from', 'mode', 'byOrAt', 'time', 'duration'],
+    computed:{
+      arrival(){
+        return this.byOrAt == 'by' ? 'arrive by' : 'depart at';
+      }
     },
     methods:{
       select: function(){
-        this.dispatch({type:'SELECT', id:this.id, selectionType:'commute'});
+        this.$store.commit('select',{id:this.id, type:'commute'});
       },
       remove: function(){
-        this.dispatch({type:'REMOVE_COMMUTE', id:this.id});
+        this.$store.commit('removeCommute', {id:this.id});
       }
     }
   };
