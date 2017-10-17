@@ -1,15 +1,9 @@
 <template>
   <div class="location-row col-xs-12" @click="select">
     <span class="col-xs-6">{{address}}</span>
-    <span class="col-xs-2">{{type}}</span>
-    <span class="col-xs-2 btn btn-default" @click="remove">delete</span>
-    <!-- maybe some aggregate statitics here -->
-    <!-- maybe a delete button -->
+    <span class="col-xs-3">{{type}}</span>
+    <span class="col-xs-2 col-xs-offset-2 btn btn-default" @click="remove">delete</span>
   </div>
-<!-- wrap as row -->
-<!-- address -->
-<!-- type: dropdown? -->
-<!-- delete -->
 </template>
 
 <script>
