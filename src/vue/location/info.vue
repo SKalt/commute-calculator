@@ -10,10 +10,6 @@
       :content="notes"
       @input="updateNotes"
       ></div>
-      <button class="btn btn-default"
-      @click="updateNotes">
-        Save Notes
-      </button>
       <select
         :value="type"
         @change="e => updateType(e)"
@@ -40,7 +36,7 @@
         delete
       </button>
     <div id="commutes-from-here" class="col-xs-12">
-      </div><!-- to/from rows -->
+    </div><!-- to/from rows -->
     </div>
   </div>
 </template>
@@ -58,7 +54,9 @@ export default {
       console.log('foo');
       this.notes = (this.$store.state.locations.byId[this.id] || {}).notes;
       this.$nextTick(()=>{
-        this.$el.querySelector('div.notes-box').innerText = this.notes;
+        if (this.$el.querySelector('div.notes-box')){
+          this.$el.querySelector('div.notes-box').innerText = this.notes;
+        }
       });
     }
   },

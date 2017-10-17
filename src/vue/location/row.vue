@@ -1,7 +1,8 @@
 <template>
   <div class="location-row col-xs-12" @click="select">
-    <span class="col-xs-5">{{address}}</span>
-    <span class="col-xs-5">{{type}}</span>
+    <span class="col-xs-6">{{address}}</span>
+    <span class="col-xs-2">{{type}}</span>
+    <span class="col-xs-2 btn btn-default" @click="remove">delete</span>
     <!-- maybe some aggregate statitics here -->
     <!-- maybe a delete button -->
   </div>
@@ -17,10 +18,12 @@
     props:['id', 'type', 'address'],
     methods: {
       select(){
-        this.store.commit('select', {
-          id:this.id,
-          type: this._type == 'commute' ? 'commute' : 'location'
+        this.$store.commit('select', {
+          id:this.id, type:'location'
         });
+      },
+      remove(){
+        this.$store.commit('removeLocation', {id:this.id});
       }
     }
   }

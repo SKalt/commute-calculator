@@ -6,6 +6,7 @@
         <location-row
         v-for="location in origins"
         v-bind="location"
+        v-show="selectedId != location.id"
         :key="location.id"
         type="origin"
         ></location-row>
@@ -15,6 +16,7 @@
         <location-row
         v-for="location in destinations"
         v-bind="location"
+        v-show="selectedId != location.id"
         :key="location.id"
         type="destination"
         ></location-row>
@@ -28,7 +30,9 @@
       <span class="col-xs-2">duration</span>
       <commute-row
       v-for="commute in commutes"
-      :key="commute.id"></commute-row>
+      :key="commute.id"
+      v-show="selectedId != location.id"
+      ></commute-row>
     </div>
   </div>
 </template>

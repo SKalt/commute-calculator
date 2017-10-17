@@ -42,3 +42,7 @@ div[contenteditable] {
   border:1px solid #ccc;
   border-radius: 4px;
 }
+
+.location-row:hover {
+  background-color: #ccc;
+}
