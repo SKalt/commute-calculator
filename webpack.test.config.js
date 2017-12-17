@@ -9,7 +9,6 @@ module.exports = (env={}) => {
   let MB_ACCESS_TOKEN = fs.readFileSync('api-keys/mapbox.txt', 'utf8').trim();
   MB_ACCESS_TOKEN = `'${MB_ACCESS_TOKEN}'`;
   return {
-    entry: './src/js/main.js',
     output: {
       filename: 'js/bundle.js',
       path: path.resolve(__dirname, 'dist')

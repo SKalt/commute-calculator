@@ -1,6 +1,6 @@
 /*eslint-disable no-console*/
 import debug from 'debug';
-debug.enable('store:*');
+debug.disable('store:*');
 import transitModes from '../../transit-modes.js';
 //utilities
 const check = {

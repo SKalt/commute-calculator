@@ -1,7 +1,7 @@
 import {v4} from 'uuid';
 import Vue from 'vue';
 import debug from 'debug';
-debug.enable('store:*');
+// debug.enable('store:*');
 const log = debug('store:locations');
 const set = Vue.set;
 // mutations

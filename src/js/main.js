@@ -3,7 +3,7 @@ import {debug} from 'debug';
 import map from './map.js';
 import './map-display.js';
 import './map-actions.js';
-import geocoder from './geocoder.js';
+import './geocoder.js';
 // import events from './events.js';
 import store from './store/index.js';
 // import select from './shorthand.js';
